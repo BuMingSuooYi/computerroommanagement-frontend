@@ -27,8 +27,8 @@ export default new Router({
                 },
                 // 基础数据模块
                 {
-                    path: '/user',
-                    component: () => import(/* webpackChunkName: "table" */ '../components/page/basic/user/index.vue'),
+                    path: '/account',
+                    component: () => import(/* webpackChunkName: "table" */ '../components/page/basic/account/index.vue'),
                     meta: { title: '用户管理' }
                 },
                 {
@@ -44,17 +44,17 @@ export default new Router({
                 // 机房上机
                 {
                     path: '/roomstate',
-                    component: () => import(/* webpackChunkName: "table" */ '../components/page/basic/user/index.vue'),
+                    component: () => import(/* webpackChunkName: "table" */ '../components/page/enbarkation/RoomState/index.vue'),
                     meta: { title: '机房状态管理' }
                 },
                 {
                     path: '/period',
-                    component: () => import(/* webpackChunkName: "table" */ '../components/page/basic/MachineRoom/index.vue'),
+                    component: () => import(/* webpackChunkName: "table" */ '../components/page/enbarkation/period/index.vue'),
                     meta: { title: '学时管理' }
                 },
                 {
                     path: '/boardcomputer',
-                    component: () => import(/* webpackChunkName: "table" */ '../components/page/basic/computer/index.vue'),
+                    component: () => import(/* webpackChunkName: "table" */ '../components/page/enbarkation/BoardComputer/index.vue'),
                     meta: { title: '上机管理' }
                 },
 

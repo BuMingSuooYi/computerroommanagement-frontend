@@ -78,7 +78,7 @@ export default {
                     title: '基础数据模块',
                     subs: [
                         {
-                            index: 'user',
+                            index: 'account',
                             title: '用户管理'
                         },
                         {

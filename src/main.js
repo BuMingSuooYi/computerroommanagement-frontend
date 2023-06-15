@@ -3,8 +3,7 @@ import App from './App.vue';
 import router from './router';
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
-import './utils/directives';
-import 'babel-polyfill';
+import store from '@/store';
 
 Vue.config.productionTip = false;
 Vue.use(ElementUI, {
@@ -13,7 +12,7 @@ Vue.use(ElementUI, {
 
 //使用钩子函数对路由进行权限跳转
 router.beforeEach((to, from, next) => {
-    document.title = `${to.meta.title} | vue-manage-system`;
+    document.title = `${to.meta.title} | vue-manage-admin`;
     const role = localStorage.getItem('ms_username');
     if (!role && to.path !== '/login') {
         next('/login');
@@ -34,5 +33,6 @@ router.beforeEach((to, from, next) => {
 
 new Vue({
     router,
+    store,
     render: h => h(App)
 }).$mount('#app');
