@@ -1,22 +1,21 @@
 <template>
   <div class='container'>
     <div class='form-content'>
-      <el-form :inline='true' :model='accountForm' class='demo-form-inline'>
-        <el-form-item label='用户名'>
-          <el-input v-model.trim='accountForm.username' placeholder='请输入用户名'></el-input>
+      <el-form :inline='true' :model='computerForm' class='demo-form-inline'>
+        <el-form-item label='电脑编号 '>
+          <el-input v-model.trim='computerForm.number' placeholder='请输入电脑编号'></el-input>
         </el-form-item>
-        <el-form-item label='人员类型'>
-          <el-select v-model='accountForm.type' placeholder='请选择人员类型'>
-            <el-option value='0' label='系统管理员'></el-option>
-            <el-option value='1' label='教师'></el-option>
-            <el-option value='2' label='学生'></el-option>
+
+        <el-form-item label='机器状态'>
+          <el-select v-model='computerForm.state' placeholder='请选择机器状态'>
+            <el-option value='0' label='空闲'></el-option>
+            <el-option value='1' label='被占用'></el-option>
+            <el-option value='2' label='维修中'></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label='是否账户禁用'>
-          <el-select v-model='accountForm.isDisabled' placeholder='请选择是否账户禁用'>
-            <el-option value='0' label='未禁用'></el-option>
-            <el-option value='1' label='禁用'></el-option>
-          </el-select>
+
+        <el-form-item label='所属机房'>
+          <el-input v-model.trim='computerForm.machineRoom' placeholder='请输入机房编号'></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type='primary' icon='el-icon-search' @click='querySubmit'>查询</el-button>
@@ -24,14 +23,12 @@
       </el-form>
     </div>
     <div class='handle-group'>
-      <el-button type='success' @click='showUploadFileDialog'>上传<i class='el-icon-upload el-icon--right'></i>
-      </el-button>
       <el-button type='success'>下载<i class='el-icon-download el-icon--right'></i></el-button>
-      <el-button type='primary' @click='handleEditOrAdd' plain>+ 新增</el-button>
+      <el-button type='primary' @click='handleEditOrAdd(-1,"新增")' plain>+ 新增</el-button>
     </div>
     <div class='table-content'>
       <el-table v-loading='tableLoading'
-                :data='accountData'
+                :data='computerData'
                 tooltip-effect='dark'
                 border
                 stripe
@@ -40,27 +37,24 @@
         <el-table-column label='序号' type='index' width='120'>
 
         </el-table-column>
-        <el-table-column prop='username' label='用户名' width='170'>
+        <el-table-column prop='number' label='电脑编号' width='170'>
         </el-table-column>
 
-        <el-table-column prop='type' label='人员类型' width='170'>
+        <el-table-column prop='configuration' label='配置' width='170'>
+        </el-table-column>
+
+        <el-table-column prop='machine_room' label='机房名' width='170'>
+        </el-table-column>
+
+        <el-table-column prop='camera_stand' label='座位号' width='180'>
+        </el-table-column>
+
+        <el-table-column prop='state' label='状态' width='180'>
           <template slot-scope='scope'>
-            <span v-if='scope.row.type === 0'>系统管理员</span>
-            <span v-else-if='scope.row.type === 1'>教室</span>
-            <span v-else-if='scope.row.type === 2'>学生</span>
-          </template>
-        </el-table-column>
-
-        <el-table-column prop='isDisabled' label='账户禁用' width='170'>
-          <template slot-scope='scope'>
-            <el-switch v-model='scope.row.isDisabled' @change='changeStatus($event, scope.row)'></el-switch>
-          </template>
-        </el-table-column>
-
-        <el-table-column prop='createTime' label='创建时间' width='180'>
-        </el-table-column>
-
-        <el-table-column prop='updateTime' label='更新时间' width='180'>
+          <span v-if='scope.row.type === 0'>空闲</span>
+          <span v-else-if='scope.row.type === 1'>使用中</span>
+          <span v-else-if='scope.row.type === 2'>维修中</span>
+        </template>
         </el-table-column>
 
         <el-table-column label='操作' fixed='right'>
@@ -81,53 +75,50 @@
       </el-pagination>
     </div>
     <UploadForm />
-    <AccountForm v-if='showDialog'
-                 ref='accountForm'
+    <ComputerForm v-if='showDialog'
+                 ref='computerForm'
                  :action-type='actionType'
                  @closeDialog='closeDialog' />
   </div>
 </template>
 
 <script>
-import { getAccountByPage, deleteAccountById } from '@/api/basic/account';
-import UploadForm from '@/components/page/common/UploadForm.vue';
+import { getComputerByPage, deleteComputerById } from '@/api/basic/computer';
 import { mapMutations, mapState } from 'vuex';
-import AccountForm from '@/components/page/basic/account/modules/AccountForm.vue';
+import ComputerForm from '@/components/page/computer/computer/modules/ComputerForm.vue';
 
 /**
  * 参考教程 https://www.jianshu.com/p/01720959efdb/
  */
 export default {
-  name: 'Account',
+  name: 'Computer',
   components: {
-    AccountForm,
-    UploadForm
+    ComputerForm
   },
   created() {
     // 初始化数据
-    this.initAccountData();
+    this.initComputerData();
     // 监听是否需要刷新书库
     this.$watch('uploadSuccess', this.refreshData);
   },
   data() {
     return {
       tableLoading: false,  // 加载动画
-      // 角色表单信息(查询条件）
-      accountForm: {
-        username: '',// 用户名
-        type: '',// 人员类型
-        isDisabled: '' // 账户是否禁用
+      //电脑表单（查询条件）
+      computerForm: {
+        number: '',//编号
+        state: '0',//状态
+        machineRoom: ''//所属机房
       },
       // 表格所有数据
-      accountData: [
+      computerData: [
         {
-          id: '1',
-          username: '张三',
-          type: 0,
-          isDisabled: '0',
-          isDeleted: '0',
-          createTime: '2022.04.01 12:00:00',
-          updateTime: '2022.04.01 12:00:00'
+          id: 1,
+          number: '0001',
+          configuration: 0,
+          machine_room: 1,
+          camera_stand: 20,
+          state: 0,
         }
       ],
       showDialog: false,
@@ -138,9 +129,7 @@ export default {
       pageSizes: [8, 10, 15], // 每页大小
       totalDataSize: 0, // 数据总条数
       // 选中的账户
-      selectedAccount: {},
-      uploadFile: {}
-
+      selectedComputer: {},
     };
   },
   computed: {
@@ -150,12 +139,6 @@ export default {
     // 使用了mapMutations辅助函数将toggleUploadDialog mutation映射到组件中的toggleUploadDialog方法。
     ...mapMutations(['toggleUploadDialog', 'refreshTableData']),
     /**
-     * 展示上传文件对话框
-     */
-    showUploadFileDialog() {
-      this.toggleUploadDialog(true);
-    },
-    /**
      * 刷新数据监听
      * @param newVal
      * @param oldVal
@@ -163,30 +146,30 @@ export default {
     refreshData(newVal, oldVal) {
       // 在shouldRefreshData状态变化时执行的操作
       if (newVal) {
-        this.initAccountData();
+        this.initComputerData();
         this.refreshTableData(false);
       }
     },
     /**
-     * 初始化账户表格信息
+     * 初始化电脑表格信息
      * @returns {Promise<void>}
      */
-    initAccountData: async function() {
+    initComputerData: async function() {
       this.tableLoading = true;
       // 定义请求参数 (查询条件)
       const params = {
         page: this.page,
         pageSize: this.pageSize,
-        username: this.accountForm.username ? this.accountForm.username : '',
-        type: this.accountForm.type ? this.accountForm.type : -1,
-        isDisabled: this.accountForm.isDisabled ? this.accountForm.isDisabled : -1
+        number: this.computerForm.number ? this.computerForm.number : '',
+        state: this.computerForm.state ? this.computerForm.state : -1,
+        machineRoom: this.computerForm.machineRoom ? this.computerForm.machineRoom : ''
       };
-      await getAccountByPage(params).then(res => {
+      await getComputerByPage(params).then(res => {
         if (res.code === 200) {
           // 存储请求到的后端数据
-          this.accountData = res.data.records;
-          for (let index = 0; index < this.accountData.length; index++) {
-            this.accountData[index].isDisabled === 1 ? this.accountData[index].isDisabled = true : this.accountData[index].isDisabled = false;
+          this.computerData = res.data.records;
+          for (let index = 0; index < this.computerData.length; index++) {
+            this.computerData[index].isDisabled === 1 ? this.computerData[index].isDisabled = true : this.computerData[index].isDisabled = false;
           }
           // 设置数据总条数
           this.totalDataSize = res.data.total;
@@ -202,17 +185,18 @@ export default {
     handleEditOrAdd(row, type) {
       this.actionType = type;
       if (this.actionType === '新增') {
-        this.selectedAccount = {
-          username: '',
-          password: ''
+        this.selectedComputer = {
+          configurationId: '',//配置号
+          machine_roomId: '',//机房
+          seatNum: ''//座位号
         };
       } else {
-        this.selectedAccount = row;
+        this.selectedComputer = row;
       }
       this.showDialog = true;
       // 对话框展开
       this.$nextTick(() => {
-        this.$refs['accountForm'].showDialog = true;
+        this.$refs['computerForm'].showDialog = true;
       });
 
     },
@@ -227,7 +211,7 @@ export default {
         type: 'warning'
       }).then(() => {
         // 批量删除或单条数据删除，走同一个后端接口
-        deleteAccountById(id).then(res => {
+        deleteComputerById(id).then(res => {
           if (res.code === 200) {
             this.$message({
               type: 'success',
@@ -251,7 +235,7 @@ export default {
      */
     handleSizeChange(val) {
       this.pageSize = val;
-      this.initAccountData();
+      this.initComputerData();
     },
     /**
      * 切换第几页
@@ -259,7 +243,7 @@ export default {
      */
     handleCurrentChange(val) {
       this.page = val;
-      this.initAccountData();
+      this.initComputerData();
     },
 
     /**
@@ -267,7 +251,7 @@ export default {
      */
     querySubmit() {
       this.page = 1;  // 设置查询第page页或者第一页
-      this.initAccountData();
+      this.initComputerData();
     },
 
     /**
@@ -277,7 +261,7 @@ export default {
     closeDialog(changeInfo) {
       // 数据改变，重新刷新表格数据
       if (changeInfo) {
-        this.initAccountData();
+        this.initComputerData();
       }
       // 关闭对话框
       this.showDialog = false;
