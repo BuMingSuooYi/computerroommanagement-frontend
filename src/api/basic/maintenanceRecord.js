@@ -7,9 +7,9 @@ const baseURL = '/maintenanceRecord';
 
 /**
  * 分页查询维修记录
- * @param params  (page: 第几页, pageSize: 每页大小, number: 电脑编号(输入框，参考电脑表))
+ * @param params  (page: 第几页, pageSize: 每页大小, number: 电脑编号(输入框，参考电脑表), startTime: 起始时间)
  * @returns {AxiosPromise} Axios请求
- * @example params: {page: 1,pageSize: 1, number: '小新air7-001'}
+ * @example params: {page: 1,pageSize: 1, number: '小新air7-001', startTime: '2020-01-01'}
  */
 export const getMaintenanceRecordByPage = (params) => {
     return request({

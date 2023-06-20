@@ -226,7 +226,7 @@ export default {
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-                // 批量删除或单条数据删除，走同一个后端接口
+                // 单条数据删除
                 deleteAccountById(id).then(res => {
                     if (res.code === 200) {
                         this.$message({

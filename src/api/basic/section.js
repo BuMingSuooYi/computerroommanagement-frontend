@@ -6,6 +6,20 @@ import request from '@/utils/axios';
 const baseURL = '/section';
 
 /**
+ * 分页查询节次
+ * @param params  (page: 第几页, pageSize: 每页大小)
+ * @returns {AxiosPromise} Axios请求
+ * @example params: {page: 1,pageSize: 1}
+ */
+export const getSectionByPage = (params) => {
+    return request({
+        url: `${baseURL}/page`,
+        method: 'GET',
+        params
+    });
+};
+
+/**
  * 获取所有节次
  * @returns {AxiosPromise} Axios请求
  */

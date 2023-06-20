@@ -20,6 +20,17 @@ export const getComputerByPage = (params) => {
 };
 
 /**
+ * 获取所有电脑
+ * @returns {AxiosPromise} Axios请求
+ */
+export const getAllComputer = () => {
+    return request({
+        url: `${baseURL}`,
+        method: 'GET'
+    });
+};
+
+/**
  * 添加电脑
  * @param params Computer对象
  * @returns {AxiosPromise} Axios请求
