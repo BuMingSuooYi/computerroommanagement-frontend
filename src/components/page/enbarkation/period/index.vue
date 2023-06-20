@@ -18,7 +18,7 @@
         </div>
 
         <div class='table-content'>
-            <el-table v-loading='tableLoading' ref='multipleTable' :data='PeriodData' tooltip-effect='dark' border
+            <el-table  ref='multipleTable' :data='PeriodData' tooltip-effect='dark' border
                       stripe
                       style='width: 100%;background-color: #3A71A8' :header-cell-style="{ background: '#f5f7fa' }"
                       @selection-change='handleSelectionChange'>

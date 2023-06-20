@@ -88,6 +88,10 @@ export default {
                         {
                             index: 'computer',
                             title: '电脑管理'
+                        },
+                        {
+                            index:  'boardrecord',
+                            title: '上机记录'
                         }
                     ]
                 },
@@ -111,10 +115,21 @@ export default {
                         }
                     ]
                 },
-
                 {
                     icon: 'el-icon-thumb',
                     index: '4',
+                    title: '系统管理',
+                    subs: [
+                        {
+                            index: 'loginlog',
+                            title: '日志管理'
+                        },
+                    ]
+                },
+
+                {
+                    icon: 'el-icon-thumb',
+                    index: '5',
                     title: '错误处理',
                     subs: [
                         {

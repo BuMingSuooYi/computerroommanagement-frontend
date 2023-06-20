@@ -1,17 +1,17 @@
 /**
- * 账户管理api
+ * 电脑管理api
  */
 import request from '@/utils/axios';
-// 账户基本路径
-const baseURL = '/account';
+// 电脑管理基本路径
+const baseURL = '/computer';
 
 /**
- * 分页查询账户
- * @param params  (page: 第几页, pageSize: 每页大小, username: 用户名(输入框), type: 人员类型（下拉框）, isDisabled: 是否禁用（下拉框）)
+ * 分页查询电脑
+ * @param params  (page: 第几页, pageSize: 每页大小, number: 编号(输入框), machineRoom: 隶属机房(下拉框), state: 状态(下拉框))
  * @returns {AxiosPromise} Axios请求
- * @example params: {page: 1,pageSize: 1, username: '张三',type: 0, idDisabled: 0}
+ * @example params: {page: 1,pageSize: 1, number: 'A0001',machineRoom: 'D301', state: 0}
  */
-export const getAccountByPage = (params) => {
+export const getComputerByPage = (params) => {
     return request({
         url: `${baseURL}/page`,
         method: 'GET',
@@ -20,11 +20,11 @@ export const getAccountByPage = (params) => {
 };
 
 /**
- * 添加账户
- * @param params Account对象
+ * 添加电脑
+ * @param params Computer对象
  * @returns {AxiosPromise} Axios请求
  */
-export const addAccount = (params) => {
+export const addComputer = (params) => {
     return request({
         url: `${baseURL}`,
         method: 'POST',
@@ -33,11 +33,11 @@ export const addAccount = (params) => {
 };
 
 /**
- * 根据ID删除账户
- * @param id 账户ID
+ * 根据ID删除电脑
+ * @param id 电脑ID
  * @returns {AxiosPromise} Axios请求
  */
-export const deleteAccountById = (id) => {
+export const deleteComputerById = (id) => {
     return request({
         url: `${baseURL}`,
         method: 'DELETE',
@@ -46,11 +46,11 @@ export const deleteAccountById = (id) => {
 };
 
 /**
- * 修改账户
- * @param params Account对象
+ * 修改电脑
+ * @param params Computer对象
  * @returns {AxiosPromise} Axios请求
  */
-export const editAccount = (params) => {
+export const editComputer = (params) => {
     return request({
         url: `${baseURL}`,
         method: 'PUT',

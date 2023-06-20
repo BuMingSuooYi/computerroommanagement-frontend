@@ -41,6 +41,11 @@ export default new Router({
                     component: () => import(/* webpackChunkName: "table" */ '../components/page/basic/computer/index.vue'),
                     meta: { title: '电脑管理' }
                 },
+                {
+                    path: '/boardrecord',
+                    component: () => import(/* webpackChunkName: "table" */ '../components/page/basic/BoardRecord/index.vue'),
+                    meta: { title: '上机记录' }
+                },
                 // 机房上机
                 {
                     path: '/roomstate',
@@ -56,6 +61,12 @@ export default new Router({
                     path: '/boardcomputer',
                     component: () => import(/* webpackChunkName: "table" */ '../components/page/enbarkation/BoardComputer/index.vue'),
                     meta: { title: '上机管理' }
+                },
+                // 系统管理
+                {
+                    path: '/loginlog',
+                    component: () => import(/* webpackChunkName: "table" */ '../components/page/system/LoginLog/index.vue'),
+                    meta: { title: '日志管理' }
                 },
 
                 // 权限管理

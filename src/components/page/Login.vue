@@ -1,27 +1,34 @@
 <template>
     <div class='login-wrap'>
         <div class='ms-login'>
-            <div class='ms-title'>通用管理系统</div>
-            <el-form :model='param' :rules='rules' ref='login' label-width='0px' class='ms-content'>
-                <el-form-item prop='username'>
-                    <el-input v-model='param.username' placeholder='username'>
-                        <el-button slot='prepend' icon='el-icon-lx-people'></el-button>
+            <div class='ms-title'>学院机房上机管理系统</div>
+            <el-form :model='param' :rules='rules' ref='login' label-width='80px' class='ms-content'>
+                <el-form-item prop='username' label='用户名'>
+                    <el-input v-model='param.username' placeholder='请输入用户名'>
                     </el-input>
                 </el-form-item>
-                <el-form-item prop='password'>
+                <el-form-item prop='password' label='密码'>
                     <el-input
+                        show-password
                         type='password'
                         placeholder='password'
                         v-model='param.password'
                         @keyup.enter.native='submitForm()'
                     >
-                        <el-button slot='prepend' icon='el-icon-lx-lock'></el-button>
                     </el-input>
+                </el-form-item>
+                <el-form-item prop='type' label='人员类型'>
+                    <el-select v-model='param.type' placeholder='请选择人员类型'>
+                        <el-option value='0' label='系统管理员'></el-option>
+                        <el-option value='1' label='机房管理员'></el-option>
+                        <el-option value='2' label='学生'></el-option>
+                    </el-select>
+
                 </el-form-item>
                 <div class='login-btn'>
                     <el-button type='primary' @click='submitForm()'>登录</el-button>
                 </div>
-                <p class='login-tips'>Tips : 用户名和密码随便填。<a href='https://blog.jayhrn.com/' target='_blank'>联系作者</a></p>
+
             </el-form>
         </div>
     </div>
@@ -33,7 +40,8 @@ export default {
         return {
             param: {
                 username: 'admin',
-                password: '123123'
+                password: '123123',
+                type: ''
             },
             rules: {
                 username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
@@ -61,11 +69,14 @@ export default {
 
 <style scoped>
 .login-wrap {
-    position: relative;
-    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-content: center;
     height: 100%;
     background-color: #324156;
     background-size: 100%;
+    align-items: center;
 }
 
 .ms-title {
@@ -78,14 +89,14 @@ export default {
 }
 
 .ms-login {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    width: 350px;
-    margin: -190px 0 0 -175px;
-    border-radius: 5px;
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    flex-wrap: wrap;
     background: rgba(255, 255, 255, 0.3);
-    overflow: hidden;
+    height: 320px;
+    width: 450px;
+    border-radius: 6px;
 }
 
 .ms-content {
@@ -107,4 +118,6 @@ export default {
     line-height: 30px;
     color: #fff;
 }
+
+
 </style>
