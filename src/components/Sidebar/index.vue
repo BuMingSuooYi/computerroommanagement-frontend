@@ -75,61 +75,90 @@ export default {
                 {
                     icon: 'el-icon-date',
                     index: '1',
-                    title: '基础数据模块',
+                    title: '基础数据管理',
                     subs: [
                         {
                             index: 'account',
                             title: '用户管理'
                         },
                         {
-                            index: 'machineroom',
+                            index: 'section',
+                            title: '节次管理'
+                        }
+                    ]
+                },
+                {
+                    icon: 'el-icon-date',
+                    index: 'student',
+                    title: '学生管理'
+                },
+                {
+                    icon: 'el-icon-date',
+                    index: '2',
+                    title: '机房管理',
+                    subs: [
+                        {
+                            index: 'machineRoom',
                             title: '机房管理'
                         },
+                        {
+                            index: 'rejectRecord',
+                            title: '状态管理'
+                        }
+                    ]
+                },
+                {
+                    icon: 'el-icon-date',
+                    index: '3',
+                    title: '电脑管理',
+                    subs: [
                         {
                             index: 'computer',
                             title: '电脑管理'
                         },
                         {
-                            index:  'boardrecord',
-                            title: '上机记录'
+                            index: 'maintenanceRecord',
+                            title: '维修管理'
+                        },
+                        {
+                            index: 'computerConfiguration',
+                            title: '配置管理'
                         }
                     ]
                 },
-
                 {
                     icon: 'el-icon-date',
-                    index: '2',
-                    title: '机房上机模块',
+                    index: '4',
+                    title: '上机管理',
                     subs: [
                         {
-                            index: 'roomstate',
-                            title: '机房状态管理'
-                        },
-                        {
-                            index: 'period',
-                            title: '学时管理'
-                        },
-                        {
-                            index: 'boardcomputer',
+                            index: 'boardComputer',
                             title: '上机管理'
+                        },
+                        {
+                            index: 'computerRecord',
+                            title: '上机记录'
+                        },
+                        {
+                            index: 'clazzPeriod',
+                            title: '学时管理'
                         }
                     ]
                 },
                 {
-                    icon: 'el-icon-thumb',
-                    index: '4',
+                    icon: 'el-icon-date',
+                    index: '5',
                     title: '系统管理',
                     subs: [
                         {
-                            index: 'loginlog',
-                            title: '日志管理'
-                        },
+                            index: 'loginLog',
+                            title: '登录日志'
+                        }
                     ]
                 },
-
                 {
                     icon: 'el-icon-thumb',
-                    index: '5',
+                    index: '6',
                     title: '错误处理',
                     subs: [
                         {

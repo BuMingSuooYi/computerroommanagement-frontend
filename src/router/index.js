@@ -25,46 +25,69 @@ export default new Router({
                     component: () => import(/* webpackChunkName: "dashboard" */ '../components/page/Dashboard.vue'),
                     meta: { title: '系统首页' }
                 },
-                // 基础数据模块
+                // 基础数据管理
                 {
                     path: '/account',
                     component: () => import(/* webpackChunkName: "table" */ '../components/page/basic/account/index.vue'),
                     meta: { title: '用户管理' }
                 },
                 {
+                    path: '/section',
+                    component: () => import(/* webpackChunkName: "table" */ '../components/page/basic/section/index.vue'),
+                    meta: { title: '节次管理' }
+                },
+                // 学生管理
+                {
+                    path: '/student',
+                    component: () => import(/* webpackChunkName: "table" */ '../components/page/student/index.vue'),
+                    meta: { title: '学生管理' }
+                },
+                // 机房管理
+                {
                     path: '/machineroom',
-                    component: () => import(/* webpackChunkName: "table" */ '../components/page/basic/MachineRoom/index.vue'),
+                    component: () => import(/* webpackChunkName: "table" */ '../components/page/MachineRoom/MachineRoom/index.vue'),
                     meta: { title: '机房管理' }
                 },
                 {
+                    path: '/rejectRecord',
+                    component: () => import(/* webpackChunkName: "table" */ '../components/page/MachineRoom/RejectRecord/index.vue'),
+                    meta: { title: '状态管理' }
+                },
+                // 电脑管理
+                {
                     path: '/computer',
-                    component: () => import(/* webpackChunkName: "table" */ '../components/page/basic/computer/index.vue'),
+                    component: () => import(/* webpackChunkName: "table" */ '../components/page/computer/computer/index.vue'),
                     meta: { title: '电脑管理' }
                 },
                 {
-                    path: '/boardrecord',
-                    component: () => import(/* webpackChunkName: "table" */ '../components/page/basic/BoardRecord/index.vue'),
+                    path: '/maintenanceRecord',
+                    component: () => import(/* webpackChunkName: "table" */ '../components/page/computer/MaintenanceRecord/index.vue'),
+                    meta: { title: '维修管理' }
+                },
+                {
+                    path: '/computerConfiguration',
+                    component: () => import(/* webpackChunkName: "table" */ '../components/page/computer/ComputerConfiguration/index.vue'),
+                    meta: { title: '配置管理' }
+                },
+                // 上机管理
+                {
+                    path: '/boardComputer',
+                    component: () => import(/* webpackChunkName: "table" */ '../components/page/embarkation/BoardComputer/index.vue'),
+                    meta: { title: '上机管理' }
+                },
+                {
+                    path: '/computerRecord',
+                    component: () => import(/* webpackChunkName: "table" */ '../components/page/embarkation/computerRecord/index.vue'),
                     meta: { title: '上机记录' }
                 },
-                // 机房上机
                 {
-                    path: '/roomstate',
-                    component: () => import(/* webpackChunkName: "table" */ '../components/page/enbarkation/RoomState/index.vue'),
-                    meta: { title: '机房状态管理' }
-                },
-                {
-                    path: '/period',
-                    component: () => import(/* webpackChunkName: "table" */ '../components/page/enbarkation/period/index.vue'),
+                    path: '/clazzPeriod',
+                    component: () => import(/* webpackChunkName: "table" */ '../components/page/embarkation/clazzPeriod/index.vue'),
                     meta: { title: '学时管理' }
-                },
-                {
-                    path: '/boardcomputer',
-                    component: () => import(/* webpackChunkName: "table" */ '../components/page/enbarkation/BoardComputer/index.vue'),
-                    meta: { title: '上机管理' }
                 },
                 // 系统管理
                 {
-                    path: '/loginlog',
+                    path: '/loginLog',
                     component: () => import(/* webpackChunkName: "table" */ '../components/page/system/LoginLog/index.vue'),
                     meta: { title: '日志管理' }
                 },
