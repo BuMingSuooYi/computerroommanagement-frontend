@@ -4,7 +4,7 @@
                  class='demo-maintenanceRecordForm'>
 
             <el-form-item label='电脑' prop='computer'>
-                <el-select v-model='maintenanceRecordForm.computerObject.number' placeholder='请选择电脑'
+                <el-select v-model='maintenanceRecordForm.computer' placeholder='请选择电脑'
                            @visible-change='queryAllComputer'>
                     <el-option v-for='(item, index) in computerOptions' :label='item.number' :value='item.id'
                                :key='index'></el-option>
@@ -12,20 +12,24 @@
             </el-form-item>
 
             <el-form-item label='起始时间' prop='startTime'>
-                <el-date-picker
-                    v-model='maintenanceRecordForm.startTime'
-                    type='date'
-                    placeholder='请选择日期'>
-                </el-date-picker>
+                <el-date-picker v-model='maintenanceRecordForm.startTime'
+                                clearable
+                                value-format='yyyy-MM-dd HH:mm:ss'
+                                type='datetime'
+                                placeholder='选择日期'
+                ></el-date-picker>
             </el-form-item>
 
-            <el-form-item label='结束时间'  prop='endTime'>
-                <el-date-picker
-                    v-model='maintenanceRecordForm.endTime'
-                    type='date'
-                    placeholder='请选择日期'>
-                </el-date-picker>
+            <el-form-item label='结束时间' prop='endTime'>
+                <el-date-picker v-model='maintenanceRecordForm.endTime'
+                                clearable
+                                value-format='yyyy-MM-dd HH:mm:ss'
+                                type='datetime'
+                                placeholder='选择日期'
+                ></el-date-picker>
             </el-form-item>
+
+
 
             <el-form-item label='备注' prop='remark'>
                 <el-input v-model='maintenanceRecordForm.remark' placeholder='请输入备注'></el-input>
@@ -87,7 +91,7 @@ export default {
         queryAllComputer() {
             getAllComputer().then(res => {
                 if (res.code === 200) {
-                    this.driverOptions = res.data;
+                    this.computerOptions = res.data;
                 }
             }).catch(err => {
                 this.$message.error('请求出错了：' + err);

@@ -16,13 +16,8 @@
                     </el-select>
                 </el-form-item>
 
-                <el-form-item label='电脑'>
-                    <el-select v-model='computerRecordForm.computer' placeholder='请选择电脑'
-                               @visible-change='queryAllComputer'>
-                        <el-option v-for='(item, index) in computerOptions' :label='item.name'
-                                   :value='item.id'
-                                   :key='index'></el-option>
-                    </el-select>
+                <el-form-item label='电脑编号'>
+                    <el-input v-model='computerRecordForm.computer' placeholder='请输入电脑编号'></el-input>
                 </el-form-item>
 
                 <el-form-item>
@@ -66,10 +61,9 @@
                 <el-table-column label='结束时间' prop='endTime' width='220'>
                 </el-table-column>
 
-
                 <el-table-column label='操作'>
                     <template slot-scope='scope'>
-                        <el-button size='mini' @click="handleEditOrAdd(scope.row, '编辑')">编辑
+                        <el-button size='mini' @click="handleEditOrAdd(scope.row, '下机')">编辑
                         </el-button>
                         <el-button size='mini' type='danger' @click='handleDelete(null, scope.row.id)'>删除
                         </el-button>
@@ -83,7 +77,7 @@
         </div>
 
         <ComputerRecordForm v-if='showDialog' ref='computerRecordForm' :action-type='actionType'
-                            :selected-computerRecord='selectedComputerRecord'
+                            :selected-computer-record='selectedComputerRecord'
                             @closeDialog='closeDialog' />
 
     </div>
@@ -163,7 +157,7 @@ export default {
                 pageSize: this.pageSize,
                 student: this.computerRecordForm.student ? this.computerRecordForm.student : '',
                 machineRoom: this.computerRecordForm.machineRoom ? this.computerRecordForm.machineRoom : -1,
-                computer: this.computerRecordForm.computer ? this.computerRecordForm.computer : -1
+                computer: this.computerRecordForm.computer ? this.computerRecordForm.computer : ''
             };
             await getComputerRecordByPage(params).then(res => {
                 if (res.code === 200) {

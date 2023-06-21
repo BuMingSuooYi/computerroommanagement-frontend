@@ -3,23 +3,25 @@
         <div class='form-content'>
             <el-form :inline='true' :model='computerForm' class='demo-form-inline'>
                 <el-form-item label='电脑编号'>
-                    <el-input v-model='computerForm.number' placeholder='请输入电脑工编号'></el-input>
+                    <el-input v-model='computerForm.number' placeholder='请输入电脑编号'></el-input>
                 </el-form-item>
 
                 <el-form-item label='隶属机房'>
-                    <el-select v-model='computerForm.machineRoom.name' placeholder='请选择机房'
+                    <el-select v-model='computerForm.machineRoom' placeholder='请选择机房'
                                @visible-change='queryAllMachineRoom' clearable>
-                        <el-option v-for='(item, index) in computerForm.machineRoom' :label='item.name'
+                        <el-option v-for='(item, index) in machineRoomOptions' :label='item.name'
                                    :value='item.id'
                                    :key='index'></el-option>
                     </el-select>
                 </el-form-item>
 
-                <el-form-item label='性别' prop='sex'>
-                    <el-select v-model='computerForm.state' placeholder='请选择性别' clearable>
-                        <el-option key='0' label='女' value='0'>
+                <el-form-item label='开放状态' prop='state'>
+                    <el-select v-model='computerForm.state' placeholder='请选择状态' clearable>
+                        <el-option key='0' label='空闲' value='0'>
                         </el-option>
-                        <el-option key='1' label='男' value='1'>
+                        <el-option key='1' label='使用中' value='1'>
+                        </el-option>
+                        <el-option key='2' label='维修中' value='1'>
                         </el-option>
                     </el-select>
                 </el-form-item>
@@ -38,34 +40,43 @@
                       stripe
                       style='width: 100%;background-color: #3A71A8' :header-cell-style="{ background: '#f5f7fa' }"
                       @selection-change='handleSelectionChange'>
-                <el-table-column type='selection' width='55'>
+                <el-table-column type='selection' width='80'>
                 </el-table-column>
-                <el-table-column label='序号' type='index' width='80'>
-                </el-table-column>
-                <el-table-column prop='number' label='工号' width='120'>
-                </el-table-column>
-                <el-table-column prop='name' label='姓名' width='120'>
-                </el-table-column>
-                <el-table-column prop='sex' label='性别' width='120'>
+                <el-table-column label='序号' type='index' width='100'>
                     <template slot-scope='scope'>
-                        <span v-if='scope.row.sex === 1'>男</span>
-                        <span v-else-if='scope.row.sex === 0'>女</span>
-                    </template>
-                </el-table-column>
-                <el-table-column prop='birthday' label='出生年月' sortable width='120'>
-                </el-table-column>
-                <el-table-column prop='drivingAge' label='驾龄/年' sortable width='120'>
-                </el-table-column>
-                <el-table-column prop='telephone' label='联系电话' width='120'>
-                </el-table-column>
-                <el-table-column prop='address' label='家庭地址' show-overflow-tooltip>
-                    <template slot-scope='scope'>
-                        <span>{{ codeToRealAddress(stringToArray(scope.row.addressCode)) + scope.row.addressDetail
-                            }}</span>
+                        <!-- 自定义索引列的内容 -->
+                        <span>{{ scope.$index + (page - 1) * pageSize + 1 }}</span>
                     </template>
                 </el-table-column>
 
-                <el-table-column label='操作' width='180' fixed='right'>
+                <el-table-column prop='number' label='电脑编号' width='120'>
+                </el-table-column>
+
+                <el-table-column prop='machineRoom' label='隶属机房' width='180'>
+                    <template slot-scope='scope'>
+                        <span>{{ scope.row.machineRoomObject.name }}</span>
+                    </template>
+                </el-table-column>
+
+                <el-table-column prop='configuration' label='电脑配置' width='180'>
+                    <template slot-scope='scope'>
+                        <span>{{ scope.row.computerConfigurationObject.name }}</span>
+                    </template>
+                </el-table-column>
+
+                <el-table-column prop='cameraStand' label='机位' width='120'>
+                </el-table-column>
+
+                <el-table-column prop='state' label='状态' width='120'>
+                    <template slot-scope='scope'>
+                        <span v-if='scope.row.state === 0'>空闲</span>
+                        <span v-else-if='scope.row.state === 1'>使用中</span>
+                        <span v-else-if='scope.row.state === 2'>维修中</span>
+                    </template>
+                </el-table-column>
+
+
+                <el-table-column label='操作' fixed='right'>
                     <template slot-scope='scope'>
                         <el-button size='mini' @click="handleEditOrAdd(scope.row, '编辑')">编辑
                         </el-button>
@@ -88,7 +99,7 @@
 </template>
 
 <script>
-import { deleteComputerById, getComputerByPage } from '@/api/basic/computer';
+import { deleteComputerById, getAllComputer, getComputerByPage } from '@/api/basic/computer';
 import ComputerForm from '@/components/page/computer/computer/modules/ComputerForm.vue';
 import { getAllMachineRoom } from '@/api/basic/machineRoom';
 
@@ -106,10 +117,11 @@ export default {
             showDialog: false,  // 对话框显隐
             actionType: '',  // 操作类型
             selectedComputer: {},  // 选中的电脑数据
+            machineRoomOptions: [],
             // 电脑表单信息(查询条件）
             computerForm: {
                 number: '', // 电脑编号
-                machineRoom: [],  // 隶属机房
+                machineRoom: '',  // 隶属机房
                 state: ''// 状态
             },
             // 分页数据
@@ -128,12 +140,13 @@ export default {
         queryAllMachineRoom() {
             getAllMachineRoom().then(res => {
                 if (res.code === 200) {
-                    this.computerForm.machineRoom = res.data;
+                    this.machineRoomOptions = res.data;
                 }
             }).catch(err => {
                 this.$message.error('请求出错了：' + err);
             });
         },
+
         /**
          * 初始化所有电脑数据
          * @returns {Promise<void>}
@@ -145,13 +158,14 @@ export default {
                 page: this.page,
                 pageSize: this.pageSize,
                 number: this.computerForm.number ? this.computerForm.number : '',
-                machineRoom: this.computerForm.machineRoom.id ? this.computerForm.machineRoom.id : '',
-                state: this.computerForm.state ? this.computerForm.state : ''
+                machineRoom: this.computerForm.machineRoom ? this.computerForm.machineRoom : -1,
+                state: this.computerForm.state ? this.computerForm.state : -1
             };
             await getComputerByPage(params).then(res => {
                 if (res.code === 200) {
                     // 存储请求到的数据
                     this.computerData = res.data.records;
+                    console.log(this.computerData)
                     // 设置数据总条数
                     this.totalDataSize = res.data.total;
                     this.tableLoading = false;
@@ -244,8 +258,8 @@ export default {
             if (this.actionType === '新增') {
                 this.selectedComputer = {
                     number: '',
-                    configuration: {id: '',name: ''},
-                    machineRoom: { id: '', name: '' },
+                    configuration: '',
+                    machineRoom: '',
                     cameraStand: '',
                     state: ''
                 };

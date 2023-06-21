@@ -32,9 +32,7 @@
                         <el-button type='primary' @click='handleEditOrAdd(data,"编辑")'>编辑</el-button>
                         <el-button type='primary'>详情</el-button>
                     </div>
-
                 </div>
-
             </div>
             <el-pagination background
                            @size-change='handleSizeChange'

@@ -55,7 +55,6 @@ export default {
             rules: {
                 number: [
                     { required: true, message: '请输入节次', trigger: 'blur' },
-                    { min: 1, max: 1, message: '长度为 1 个字符长度', trigger: 'blur' }
                 ]
             }
         };

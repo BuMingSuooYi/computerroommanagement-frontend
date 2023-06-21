@@ -1,32 +1,27 @@
 <template>
     <el-dialog :title="actionType + '电脑'" :visible.sync='showDialog' @close='closeDialog(0)'>
         <el-form :model='computerForm' :rules='rules' ref='computerForm' label-width='100px' class='demo-computerForm'>
-            <el-form-item label='电脑工号' prop='number'>
-                <el-input v-model='computerForm.number' placeholder='请输入电脑工号'></el-input>
+            <el-form-item label='电脑编号' prop='number'>
+                <el-input v-model='computerForm.number' placeholder='请输入电脑编号'></el-input>
             </el-form-item>
 
-            <el-form-item label='姓名' prop='name'>
-                <el-input v-model='computerForm.name' placeholder='请输入电脑姓名'></el-input>
-            </el-form-item>
-
-            <el-form-item label='机器配置' prop='configuration'>
-                <el-select v-model='computerForm.configuration.name' placeholder='请选择机机器配置'
+            <el-form-item label='电脑配置' prop='configuration'>
+                <el-select v-model='computerForm.configuration' placeholder='请选择电脑配置'
                            @visible-change='queryAllComputerConfiguration' clearable>
-                    <el-option v-for='(item, index) in computerForm.configuration' :label='item.name'
+                    <el-option v-for='(item, index) in computerConfigurationOptions' :label='item.name'
                                :value='item.id'
                                :key='index'></el-option>
                 </el-select>
             </el-form-item>
 
             <el-form-item label='隶属机房' prop='machineRoom'>
-                <el-select v-model='computerForm.machineRoom.name' placeholder='请选择机房'
+                <el-select v-model='computerForm.machineRoom' placeholder='请选择隶属机房'
                            @visible-change='queryAllMachineRoom' clearable>
-                    <el-option v-for='(item, index) in computerForm.machineRoom' :label='item.name'
+                    <el-option v-for='(item, index) in machineRoomOptions' :label='item.name'
                                :value='item.id'
                                :key='index'></el-option>
                 </el-select>
             </el-form-item>
-
 
             <el-form-item label='机位' prop='cameraStand'>
                 <el-input v-model='computerForm.cameraStand' placeholder='请输入机位'></el-input>
@@ -74,6 +69,8 @@ export default {
             selectedOptions: [],  // 选中的省市区
             // 表单数据
             computerForm: { ...this.selectedComputer },
+            machineRoomOptions: [],
+            computerConfigurationOptions: [],
             // 表单校验规则
             rules: {
                 number: [
@@ -98,19 +95,19 @@ export default {
         queryAllMachineRoom() {
             getAllMachineRoom().then(res => {
                 if (res.code === 200) {
-                    this.computerForm.machineRoom = res.data;
+                    this.machineRoomOptions = res.data;
                 }
             }).catch(err => {
                 this.$message.error('请求出错了：' + err);
             });
         },
         /**
-         * 查询所有机房
+         * 查询所有电脑配置
          */
         queryAllComputerConfiguration() {
             getAllComputerConfiguration().then(res => {
                 if (res.code === 200) {
-                    this.computerForm.machineRoom = res.data;
+                    this.computerConfigurationOptions = res.data;
                 }
             }).catch(err => {
                 this.$message.error('请求出错了：' + err);
@@ -118,13 +115,13 @@ export default {
         },
         /**
          * 为了展示需要编辑的表单数据
-         * 1. 性别由数字转字符串
-         * 2. 区域码由字符串转数组
          */
         changeShowData() {
             if (this.actionType === '编辑') {
+                console.log(this.computerForm)
+                this.computerForm.configuration=this.computerForm.computerConfigurationObject.name;
+                this.computerForm.machineRoom=this.computerForm.machineRoomObject.name;
                 this.computerForm.state = this.computerForm.state.toString();
-
             }
         },
         /**
@@ -140,14 +137,6 @@ export default {
             this.$emit('closeDialog', changeInfo);
         },
         /**
-         * 下拉框自带函数，不可公有化
-         * 处理选中的省市区转化成
-         * @param value 选择的省市区区域码
-         */
-        addressCodeToString(value) {
-            this.computerForm.addressCode = value.toString();
-        },
-        /**
          * 提交表单
          * @param formName
          */
@@ -155,9 +144,8 @@ export default {
             // 校验数据合法性
             this.$refs[formName].validate((valid) => {
                 if (valid) {
-                    // 将地址区域码转换成字符串
-                    this.addressCodeToString(this.computerForm.addressCode);
                     let params = { ...this.computerForm };
+                    console.log(params)
                     if (this.actionType === '新增') {
                         /**
                          * 新增电脑信息

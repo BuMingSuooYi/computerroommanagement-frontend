@@ -19,6 +19,19 @@ export const getStudentByPage = (params) => {
     });
 };
 
+/**
+ * 根据学生姓名查询学生
+ * @param name
+ * @returns {*}
+ */
+export const getStudentByName=(name)=>{
+    return request({
+        url: `${baseURL}/name`,
+        method: 'GET',
+        params: {name}
+    })
+}
+
 
 /**
  * 添加学时
