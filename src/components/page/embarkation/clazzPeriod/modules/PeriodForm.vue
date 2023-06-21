@@ -12,8 +12,7 @@
                 <el-input v-model='PeriodForm.clazz' placeholder='请输入班级'></el-input>
             </el-form-item>
             <el-form-item label='班级学时' prop='time'>
-                <el-input-number v-model='PeriodForm.time' :step='1'></el-input-number>
-                <!--                <el-input v-model='PeriodForm.time' placeholder='请输入班级学时'></el-input>-->
+                <el-input-number v-model='PeriodForm.time' :step='2'></el-input-number>
             </el-form-item>
 
             <el-form-item>
@@ -25,6 +24,8 @@
 </template>
 
 <script>
+
+import { addClazzPeriod, editClazzPeriod } from '@/api/basic/clazzPeriod';
 
 export default {
     name: 'PeriodForm',
@@ -48,8 +49,7 @@ export default {
                     { required: true, message: '请输入班级学时编号', trigger: 'blur' }
                 ],
                 time: [
-                    { required: true, message: '请输入班级学时姓名', trigger: 'blur' },
-                    { min: 2, max: 100, message: '请正确输入学时', trigger: 'blur' }
+                    { required: true, message: '请输入班级学时', trigger: 'blur' }
                 ]
             }
         };
@@ -89,28 +89,28 @@ export default {
                         /**
                          * 新增班级学时信息
                          */
-                        // addPeriod(params).then(res => {
-                        //     if (res.code === 200) {
-                        //         this.$message({ type: 'success', message: '添加成功！' });
-                        //         // 关闭对话框同时需要刷新数据
-                        //         this.closeDialog(1);
-                        //     }
-                        // }).catch(err => {
-                        //     this.$message.error('请求出错了：' + err);
-                        // });
+                        addClazzPeriod(params).then(res => {
+                            if (res.code === 200) {
+                                this.$message({ type: 'success', message: '添加成功！' });
+                                // 关闭对话框同时需要刷新数据
+                                this.closeDialog(1);
+                            }
+                        }).catch(err => {
+                            this.$message.error('请求出错了：' + err);
+                        });
                     } else {
                         /**
                          * 编辑班级学时信息
                          */
-                        // editPeriod(params).then(res => {
-                        //     if (res.code === 200) {
-                        //         this.$message({ type: 'success', message: '班级学时信息更新成功！' });
-                        //         // 关闭对话框同时需要刷新数据
-                        //         this.closeDialog(1);
-                        //     }
-                        // }).catch(err => {
-                        //     this.$message.error('请求出错了：' + err);
-                        // });
+                        editClazzPeriod(params).then(res => {
+                            if (res.code === 200) {
+                                this.$message({ type: 'success', message: '班级学时信息更新成功！' });
+                                // 关闭对话框同时需要刷新数据
+                                this.closeDialog(1);
+                            }
+                        }).catch(err => {
+                            this.$message.error('请求出错了：' + err);
+                        });
                     }
                 } else {
                     this.$message({ type: 'error', message: '提交失败，请检验数据是否合法！' });

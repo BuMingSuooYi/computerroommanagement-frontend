@@ -3,7 +3,7 @@
         <el-form :model='maintenanceRecordForm' :rules='rules' ref='maintenanceRecordForm' label-width='100px'
                  class='demo-maintenanceRecordForm'>
 
-            <el-form-item label='电脑'>
+            <el-form-item label='电脑' prop='computer'>
                 <el-select v-model='maintenanceRecordForm.computerObject.number' placeholder='请选择电脑'
                            @visible-change='queryAllComputer'>
                     <el-option v-for='(item, index) in computerOptions' :label='item.number' :value='item.id'
@@ -11,7 +11,7 @@
                 </el-select>
             </el-form-item>
 
-            <el-form-item label='起始时间'>
+            <el-form-item label='起始时间' prop='startTime'>
                 <el-date-picker
                     v-model='maintenanceRecordForm.startTime'
                     type='date'
@@ -19,7 +19,7 @@
                 </el-date-picker>
             </el-form-item>
 
-            <el-form-item label='结束时间'>
+            <el-form-item label='结束时间'  prop='endTime'>
                 <el-date-picker
                     v-model='maintenanceRecordForm.endTime'
                     type='date'
@@ -64,8 +64,14 @@ export default {
             maintenanceRecordForm: { ...this.selectedMaintenanceRecord },
             // 表单校验规则
             rules: {
+                computer: [
+                    { required: true, message: '请输入电脑编号', trigger: 'blur' }
+                ],
                 startTime: [
-                    { required: true, message: '请输入起始日期', trigger: 'blur' }
+                    { required: true, message: '请选择起始日期', trigger: 'blur' }
+                ],
+                endTime: [
+                    { required: true, message: '请选择结束日期', trigger: 'blur' }
                 ]
 
             }

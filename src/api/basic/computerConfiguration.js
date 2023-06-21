@@ -20,6 +20,17 @@ export const getComputerConfigurationByPage = (params) => {
 };
 
 /**
+ * 获取所有电脑配置
+ * @returns {AxiosPromise} Axios请求
+ */
+export const getAllComputerConfiguration = () => {
+    return request({
+        url: `${baseURL}`,
+        method: 'GET'
+    });
+};
+
+/**
  * 添加电脑配置
  * @param params ComputerConfiguration对象
  * @returns {AxiosPromise} Axios请求

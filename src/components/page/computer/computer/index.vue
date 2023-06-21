@@ -1,296 +1,300 @@
 <template>
-  <div class='container'>
-    <div class='form-content'>
-      <el-form :inline='true' :model='computerForm' class='demo-form-inline'>
-        <el-form-item label='电脑编号 '>
-          <el-input v-model.trim='computerForm.number' placeholder='请输入电脑编号'></el-input>
-        </el-form-item>
+    <div class='container'>
+        <div class='form-content'>
+            <el-form :inline='true' :model='computerForm' class='demo-form-inline'>
+                <el-form-item label='电脑编号'>
+                    <el-input v-model='computerForm.number' placeholder='请输入电脑工编号'></el-input>
+                </el-form-item>
 
-        <el-form-item label='机器状态'>
-          <el-select v-model='computerForm.state' placeholder='请选择机器状态'>
-            <el-option value='0' label='空闲'></el-option>
-            <el-option value='1' label='被占用'></el-option>
-            <el-option value='2' label='维修中'></el-option>
-          </el-select>
-        </el-form-item>
+                <el-form-item label='隶属机房'>
+                    <el-select v-model='computerForm.machineRoom.name' placeholder='请选择机房'
+                               @visible-change='queryAllMachineRoom' clearable>
+                        <el-option v-for='(item, index) in computerForm.machineRoom' :label='item.name'
+                                   :value='item.id'
+                                   :key='index'></el-option>
+                    </el-select>
+                </el-form-item>
 
-        <el-form-item label='所属机房'>
-          <el-input v-model.trim='computerForm.machineRoom' placeholder='请输入机房编号'></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-button type='primary' icon='el-icon-search' @click='querySubmit'>查询</el-button>
-        </el-form-item>
-      </el-form>
+                <el-form-item label='性别' prop='sex'>
+                    <el-select v-model='computerForm.state' placeholder='请选择性别' clearable>
+                        <el-option key='0' label='女' value='0'>
+                        </el-option>
+                        <el-option key='1' label='男' value='1'>
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+
+                <el-form-item>
+                    <el-button type='primary' icon='el-icon-search' @click='querySubmit'>查询</el-button>
+                </el-form-item>
+            </el-form>
+        </div>
+        <div class='handle-group'>
+            <el-button type='primary' @click="handleEditOrAdd(null, '新增')" plain>+ 新增</el-button>
+            <el-button type='danger' @click="handleDelete('批量', null)">批量删除</el-button>
+        </div>
+        <div class='table-content'>
+            <el-table v-loading='tableLoading' ref='multipleTable' :data='computerData' tooltip-effect='dark' border
+                      stripe
+                      style='width: 100%;background-color: #3A71A8' :header-cell-style="{ background: '#f5f7fa' }"
+                      @selection-change='handleSelectionChange'>
+                <el-table-column type='selection' width='55'>
+                </el-table-column>
+                <el-table-column label='序号' type='index' width='80'>
+                </el-table-column>
+                <el-table-column prop='number' label='工号' width='120'>
+                </el-table-column>
+                <el-table-column prop='name' label='姓名' width='120'>
+                </el-table-column>
+                <el-table-column prop='sex' label='性别' width='120'>
+                    <template slot-scope='scope'>
+                        <span v-if='scope.row.sex === 1'>男</span>
+                        <span v-else-if='scope.row.sex === 0'>女</span>
+                    </template>
+                </el-table-column>
+                <el-table-column prop='birthday' label='出生年月' sortable width='120'>
+                </el-table-column>
+                <el-table-column prop='drivingAge' label='驾龄/年' sortable width='120'>
+                </el-table-column>
+                <el-table-column prop='telephone' label='联系电话' width='120'>
+                </el-table-column>
+                <el-table-column prop='address' label='家庭地址' show-overflow-tooltip>
+                    <template slot-scope='scope'>
+                        <span>{{ codeToRealAddress(stringToArray(scope.row.addressCode)) + scope.row.addressDetail
+                            }}</span>
+                    </template>
+                </el-table-column>
+
+                <el-table-column label='操作' width='180' fixed='right'>
+                    <template slot-scope='scope'>
+                        <el-button size='mini' @click="handleEditOrAdd(scope.row, '编辑')">编辑
+                        </el-button>
+                        <el-button size='mini' type='danger' @click='handleDelete(null, scope.row.id)'>删除
+                        </el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+            <el-pagination background @size-change='handleSizeChange' @current-change='handleCurrentChange'
+                           :current-page.sync='page' :page-sizes='pageSizes' :page-size='pageSize'
+                           layout='total, sizes, prev, pager, next, jumper' :total='totalDataSize'>
+            </el-pagination>
+        </div>
+
+        <ComputerForm v-if='showDialog' ref='computerForm' :action-type='actionType'
+                      :selected-computer='selectedComputer'
+                      @closeDialog='closeDialog' />
+
     </div>
-    <div class='handle-group'>
-      <el-button type='success'>下载<i class='el-icon-download el-icon--right'></i></el-button>
-      <el-button type='primary' @click='handleEditOrAdd(-1,"新增")' plain>+ 新增</el-button>
-    </div>
-    <div class='table-content'>
-      <el-table v-loading='tableLoading'
-                :data='computerData'
-                tooltip-effect='dark'
-                border
-                stripe
-                style='width: 100%;background-color: #3A71A8'
-                :header-cell-style="{ background: '#f5f7fa' }">
-        <el-table-column label='序号' type='index' width='120'>
-
-        </el-table-column>
-        <el-table-column prop='number' label='电脑编号' width='170'>
-        </el-table-column>
-
-        <el-table-column prop='configuration' label='配置' width='170'>
-        </el-table-column>
-
-        <el-table-column prop='machine_room' label='机房名' width='170'>
-        </el-table-column>
-
-        <el-table-column prop='camera_stand' label='座位号' width='180'>
-        </el-table-column>
-
-        <el-table-column prop='state' label='状态' width='180'>
-          <template slot-scope='scope'>
-          <span v-if='scope.row.type === 0'>空闲</span>
-          <span v-else-if='scope.row.type === 1'>使用中</span>
-          <span v-else-if='scope.row.type === 2'>维修中</span>
-        </template>
-        </el-table-column>
-
-        <el-table-column label='操作' fixed='right'>
-          <template slot-scope='scope'>
-            <el-button size='mini' type='danger' @click='handleDelete(null, scope.row.id)'>删除
-            </el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-      <el-pagination background
-                     @size-change='handleSizeChange'
-                     @current-change='handleCurrentChange'
-                     :current-page.sync='page'
-                     :page-sizes='pageSizes'
-                     :page-size='pageSize'
-                     layout='total, sizes, prev, pager, next, jumper'
-                     :total='totalDataSize'>
-      </el-pagination>
-    </div>
-    <UploadForm />
-    <ComputerForm v-if='showDialog'
-                 ref='computerForm'
-                 :action-type='actionType'
-                 @closeDialog='closeDialog' />
-  </div>
 </template>
 
 <script>
-import { getComputerByPage, deleteComputerById } from '@/api/basic/computer';
-import { mapMutations, mapState } from 'vuex';
+import { deleteComputerById, getComputerByPage } from '@/api/basic/computer';
 import ComputerForm from '@/components/page/computer/computer/modules/ComputerForm.vue';
+import { getAllMachineRoom } from '@/api/basic/machineRoom';
 
-/**
- * 参考教程 https://www.jianshu.com/p/01720959efdb/
- */
 export default {
-  name: 'Computer',
-  components: {
-    ComputerForm
-  },
-  created() {
-    // 初始化数据
-    this.initComputerData();
-    // 监听是否需要刷新书库
-    this.$watch('uploadSuccess', this.refreshData);
-  },
-  data() {
-    return {
-      tableLoading: false,  // 加载动画
-      //电脑表单（查询条件）
-      computerForm: {
-        number: '',//编号
-        state: '0',//状态
-        machineRoom: ''//所属机房
-      },
-      // 表格所有数据
-      computerData: [
-        {
-          id: 1,
-          number: '0001',
-          configuration: 0,
-          machine_room: 1,
-          camera_stand: 20,
-          state: 0,
-        }
-      ],
-      showDialog: false,
-      actionType: '',// 操作类型
-      // 分页数据
-      page: 1,  // 当前第几页
-      pageSize: 8,  // 当前每页大小
-      pageSizes: [8, 10, 15], // 每页大小
-      totalDataSize: 0, // 数据总条数
-      // 选中的账户
-      selectedComputer: {},
-    };
-  },
-  computed: {
-    ...mapState(['uploadSuccess'])
-  },
-  methods: {
-    // 使用了mapMutations辅助函数将toggleUploadDialog mutation映射到组件中的toggleUploadDialog方法。
-    ...mapMutations(['toggleUploadDialog', 'refreshTableData']),
-    /**
-     * 刷新数据监听
-     * @param newVal
-     * @param oldVal
-     */
-    refreshData(newVal, oldVal) {
-      // 在shouldRefreshData状态变化时执行的操作
-      if (newVal) {
-        this.initComputerData();
-        this.refreshTableData(false);
-      }
+    name: 'Computer',
+    components: {
+        ComputerForm
     },
-    /**
-     * 初始化电脑表格信息
-     * @returns {Promise<void>}
-     */
-    initComputerData: async function() {
-      this.tableLoading = true;
-      // 定义请求参数 (查询条件)
-      const params = {
-        page: this.page,
-        pageSize: this.pageSize,
-        number: this.computerForm.number ? this.computerForm.number : '',
-        state: this.computerForm.state ? this.computerForm.state : -1,
-        machineRoom: this.computerForm.machineRoom ? this.computerForm.machineRoom : ''
-      };
-      await getComputerByPage(params).then(res => {
-        if (res.code === 200) {
-          // 存储请求到的后端数据
-          this.computerData = res.data.records;
-          for (let index = 0; index < this.computerData.length; index++) {
-            this.computerData[index].isDisabled === 1 ? this.computerData[index].isDisabled = true : this.computerData[index].isDisabled = false;
-          }
-          // 设置数据总条数
-          this.totalDataSize = res.data.total;
-          this.tableLoading = false;
-        }
-      }).catch(err => {
-        this.$message.error('请求出错了：' + err);
-      });
+    created() {
+        this.initComputer();
     },
-    /**
-     * 添加账户
-     */
-    handleEditOrAdd(row, type) {
-      this.actionType = type;
-      if (this.actionType === '新增') {
-        this.selectedComputer = {
-          configurationId: '',//配置号
-          machine_roomId: '',//机房
-          seatNum: ''//座位号
+    data() {
+        return {
+            tableLoading: false,  // 加载动画
+            showDialog: false,  // 对话框显隐
+            actionType: '',  // 操作类型
+            selectedComputer: {},  // 选中的电脑数据
+            // 电脑表单信息(查询条件）
+            computerForm: {
+                number: '', // 电脑编号
+                machineRoom: [],  // 隶属机房
+                state: ''// 状态
+            },
+            // 分页数据
+            page: 1,  // 当前第几页
+            pageSize: 8,  // 当前每页大小
+            pageSizes: [8, 10, 15], // 每页大小
+            totalDataSize: 0,  // 数据总条数
+            multipleSelectionComputer: [],  // 批量选中电脑数据的id
+            computerData: [] // 电脑所有数据
         };
-      } else {
-        this.selectedComputer = row;
-      }
-      this.showDialog = true;
-      // 对话框展开
-      this.$nextTick(() => {
-        this.$refs['computerForm'].showDialog = true;
-      });
-
     },
-    /**
-     * 根据id删除账户
-     * @param id
-     */
-    handleDelete(id) {
-      this.$confirm('此操作将永久删除账户信息, 是否继续?', '确定删除', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        // 批量删除或单条数据删除，走同一个后端接口
-        deleteComputerById(id).then(res => {
-          if (res.code === 200) {
-            this.$message({
-              type: 'success',
-              message: '删除成功！'
+    methods: {
+        /**
+         * 查询所有机房
+         */
+        queryAllMachineRoom() {
+            getAllMachineRoom().then(res => {
+                if (res.code === 200) {
+                    this.computerForm.machineRoom = res.data;
+                }
+            }).catch(err => {
+                this.$message.error('请求出错了：' + err);
             });
-            // 重新查询更新数据
-            this.querySubmit();
-          } else {
-            this.$message({ type: 'error', message: res.msg || '操作失败' });
-          }
-        }).catch(err => {
-          this.$message({ type: 'error', message: '请求出错了：' + err });
-        });
-      }).catch(() => {
-        this.$message({ type: 'info', message: '已取消删除' });
-      });
-    },
-    /**
-     * 切换每页多少条数据
-     * @param val  每页数据量
-     */
-    handleSizeChange(val) {
-      this.pageSize = val;
-      this.initComputerData();
-    },
-    /**
-     * 切换第几页
-     * @param val 第几页
-     */
-    handleCurrentChange(val) {
-      this.page = val;
-      this.initComputerData();
-    },
+        },
+        /**
+         * 初始化所有电脑数据
+         * @returns {Promise<void>}
+         */
+        initComputer: async function() {
+            this.tableLoading = true;
+            // 定义请求参数 (查询条件),看文档
+            const params = {
+                page: this.page,
+                pageSize: this.pageSize,
+                number: this.computerForm.number ? this.computerForm.number : '',
+                machineRoom: this.computerForm.machineRoom.id ? this.computerForm.machineRoom.id : '',
+                state: this.computerForm.state ? this.computerForm.state : ''
+            };
+            await getComputerByPage(params).then(res => {
+                if (res.code === 200) {
+                    // 存储请求到的数据
+                    this.computerData = res.data.records;
+                    // 设置数据总条数
+                    this.totalDataSize = res.data.total;
+                    this.tableLoading = false;
+                }
+            }).catch(err => {
+                this.$message.error('请求出错了：' + err);
+            });
+        },
+        /**
+         * 切换每页多少条数据
+         * @param val  每页数据量
+         */
+        handleSizeChange(val) {
+            this.pageSize = val;
+            this.initComputer();
+        },
+        /**
+         * 切换第几页
+         * @param val 第几页
+         */
+        handleCurrentChange(val) {
+            this.page = val;
+            this.initComputer();
+        },
+        /**
+         * 获取所有选中的数据
+         * @param val 所有选中行
+         */
+        handleSelectionChange(val) {
+            // 遍历循环取出所有选中项的主键
+            let selected = [];
+            val.forEach((i) => {
+                selected.push(i.id);
+            });
+            this.multipleSelectionComputer = selected;
+        },
 
-    /**
-     * 条件查询角色
-     */
-    querySubmit() {
-      this.page = 1;  // 设置查询第page页或者第一页
-      this.initComputerData();
-    },
-
-    /**
-     * 关闭对话框
-     * @param changeInfo 数据更新, true:更新，false:未更新
-     */
-    closeDialog(changeInfo) {
-      // 数据改变，重新刷新表格数据
-      if (changeInfo) {
-        this.initComputerData();
-      }
-      // 关闭对话框
-      this.showDialog = false;
+        /**
+         * 删除电脑
+         * @param type 批量或者单个删除
+         * @param id  主键
+         * @returns {ElMessageComponent}
+         */
+        handleDelete(type, id) {
+            // 判断批量删除数据
+            if (type === '批量' && id === null) {
+                // 当前没有选中数据
+                if (this.multipleSelectionComputer.length === 0) {
+                    return this.$message({ type: 'error', message: '请选择删除对象' });
+                }
+            }
+            this.$confirm('此操作将永久删除选中电脑信息, 是否继续?', '确定删除', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                // 批量删除或单条数据删除，走同一个后端接口
+                deleteComputerById(type === '批量' ? this.multipleSelectionComputer.join(',') : id).then(res => {
+                    if (res.code === 200) {
+                        this.$message({
+                            type: 'success',
+                            message: '删除' + type === '批量' ? this.multipleSelectionComputer.length + '条数据成功！' : '成功！'
+                        });
+                        // 重新查询更新数据
+                        this.querySubmit();
+                    } else {
+                        this.$message({ type: 'error', message: res.msg || '操作失败' });
+                    }
+                }).catch(err => {
+                    this.$message({ type: 'error', message: '请求出错了：' + err });
+                });
+            }).catch(() => {
+                this.$message({ type: 'info', message: '已取消删除' });
+            });
+        },
+        /**
+         * 条件查询电脑
+         */
+        querySubmit() {
+            this.page = 1;  // 设置查询第page页或者第一页
+            this.initComputer();
+        },
+        /**
+         * 编辑或者添加电脑
+         * @param row 选中行
+         * @param type 操作类型（新增，删除）
+         */
+        handleEditOrAdd(row, type) {
+            this.actionType = type;
+            if (this.actionType === '新增') {
+                this.selectedComputer = {
+                    number: '',
+                    configuration: {id: '',name: ''},
+                    machineRoom: { id: '', name: '' },
+                    cameraStand: '',
+                    state: ''
+                };
+            } else {
+                this.selectedComputer = row;
+            }
+            this.showDialog = true;
+            // 对话框展开
+            this.$nextTick(() => {
+                this.$refs['computerForm'].showDialog = true;
+            });
+        },
+        /**
+         * 关闭对话框
+         * @param changeInfo 数据更新（0：未更新，1：更新）
+         */
+        closeDialog(changeInfo) {
+            // 数据改变，重新刷新表格数据
+            if (changeInfo) {
+                this.initComputer();
+            }
+            // 关闭对话框
+            this.showDialog = false;
+        }
     }
-  }
 };
 </script>
 
 <style scoped>
 
 .table-content {
-  padding-right: 20px;
+    padding-right: 20px;
 }
 
 .handle-group {
-  height: 45px;
+    height: 45px;
 }
 
 .el-pagination {
-  border-bottom: 1px solid #dfe6ec;
-  border-left: 1px solid #dfe6ec;
-  border-right: 1px solid #dfe6ec;
-  margin-top: 0px;
-  height: 48px;
-  display: flex;
-  align-items: center;
+    border-bottom: 1px solid #dfe6ec;
+    border-left: 1px solid #dfe6ec;
+    border-right: 1px solid #dfe6ec;
+    margin-top: 0;
+    height: 48px;
+    display: flex;
+    align-items: center;
 }
 
 /deep/ .el-table .cell {
-  word-break: keep-all;
+    word-break: keep-all;
 }
 </style>

@@ -25,36 +25,22 @@
                       tooltip-effect='dark' border stripe
                       style='width: 100%;background-color: #3A71A8' :header-cell-style="{ background: '#f5f7fa' }"
                       @selection-change='handleSelectionChange'>
-                <el-table-column type='selection' width='55'>
+                <el-table-column type='selection' width='60'>
                 </el-table-column>
-                <el-table-column label='序号' type='index' width='50'>
-                </el-table-column>
-                <el-table-column prop='number' label='电脑配置编号' width='120'>
-                </el-table-column>
-                <el-table-column prop='licensePlate' label='电脑配置号码' width='120'>
-                </el-table-column>
-                <el-table-column prop='type' label='车型' width='120'>
+                <el-table-column label='序号' type='index' width='100'>
                     <template slot-scope='scope'>
-                        <span v-if='scope.row.type === 1'>平板卡车</span>
-                        <span v-else-if='scope.row.type === 2'>冷藏卡车</span>
-                        <span v-else-if='scope.row.type === 3'>集装箱卡车</span>
+                        <!-- 自定义索引列的内容 -->
+                        <span>{{ scope.$index + (page - 1) * pageSize + 1 }}</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop='maxLoad' label='最大载重' width='120'>
+
+                <el-table-column prop='name' label='电脑配置名称' width='180'>
                 </el-table-column>
-                <el-table-column prop='description' label='电脑配置描述' width='120'>
+
+                <el-table-column prop='hardware' label='硬件配置' width='240'>
                 </el-table-column>
-                <el-table-column prop='driver' label='驾驶员' width='120'>
-                    <template slot-scope='scope'>
-                        <span>{{ scope.row.driverObject.name }}</span>
-                    </template>
-                </el-table-column>
-                <el-table-column prop='status' label='电脑配置状态' width='120'>
-                    <template slot-scope='scope'>
-                        <span v-if='scope.row.status === 1'>空闲</span>
-                        <span v-else-if='scope.row.status === 2'>任务中</span>
-                        <span v-else-if='scope.row.status === 3'>维修中</span>
-                    </template>
+
+                <el-table-column prop='software' label='软件配置' width='240'>
                 </el-table-column>
 
                 <el-table-column label='操作'>
@@ -73,16 +59,21 @@
         </div>
 
         <ComputerConfigurationForm v-if='showDialog' ref='computerConfigurationForm' :action-type='actionType'
-                                   :selected-computerConfiguration='selectedComputerConfiguration'
+                                   :selected-computer-configuration='selectedComputerConfiguration'
                                    @closeDialog='closeDialog' />
 
     </div>
 </template>
 
 <script>
-import { deleteComputerConfiguration, getComputerConfigurationByPage } from '@/api/basic/computerConfiguration';
+import {
+    deleteComputerConfiguration,
+    deleteComputerConfigurationById,
+    getComputerConfigurationByPage
+} from '@/api/basic/computerConfiguration';
 import ComputerConfigurationForm
     from '@/components/page/computer/ComputerConfiguration/modules/computerConfigurationForm.vue';
+import { deleteClazzPeriodById } from '@/api/basic/clazzPeriod';
 
 export default {
     name: 'ComputerConfiguration',
@@ -105,8 +96,8 @@ export default {
             },
             // 分页数据
             page: 1,  // 当前第几页
-            pageSize: 8,  // 当前每页大小
-            pageSizes: [8, 10, 15], // 每页大小
+            pageSize: 6,  // 当前每页大小
+            pageSizes: [6, 10, 15], // 每页大小
             totalDataSize: 0,  // 数据总条数
             multipleSelectionComputerConfiguration: [],  // 批量选中电脑配置数据的id
             computerConfigurationData: [] // 电脑配置所有数据
@@ -188,7 +179,7 @@ export default {
                 type: 'warning'
             }).then(() => {
                 // 批量删除或单条数据删除，走同一个后端接口
-                deleteComputerConfiguration(type === '批量' ? this.multipleSelectionComputerConfiguration.join(',') : id).then(res => {
+                deleteComputerConfigurationById(type === '批量' ? this.multipleSelectionComputerConfiguration.join(',') : id).then(res => {
                     if (res.code === 200) {
                         this.$message({
                             type: 'success',
@@ -222,6 +213,7 @@ export default {
             this.actionType = type;
             if (this.actionType === '新增') {
                 this.selectedComputerConfiguration = {
+                    name: '',
                     hardware: '',
                     software: ''
                 };

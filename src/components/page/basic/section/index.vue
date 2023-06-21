@@ -9,12 +9,16 @@
                       style='width: 100%;background-color: #3A71A8' :header-cell-style="{ background: '#f5f7fa' }"
                       @selection-change='handleSelectionChange'>
                 <el-table-column label='序号' type='index' width='100'>
+                    <template slot-scope='scope'>
+                        <!-- 自定义索引列的内容 -->
+                        <span>{{ scope.$index + (page - 1) * pageSize + 1 }}</span>
+                    </template>
                 </el-table-column>
-                <el-table-column prop='number' label='节次' width='120'>
+                <el-table-column prop='number' label='节次' width='150'>
                 </el-table-column>
-                <el-table-column prop='startTime' label='起始时间' width='180'>
+                <el-table-column prop='startTime' label='起始时间' width='240'>
                 </el-table-column>
-                <el-table-column prop='endTime' label='结束时间' width='180'>
+                <el-table-column prop='endTime' label='结束时间' width='240'>
                 </el-table-column>
 
                 <el-table-column label='操作'>

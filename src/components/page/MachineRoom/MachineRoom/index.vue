@@ -10,8 +10,8 @@
                 </el-form-item>
                 <el-form-item label='开放状态'>
                     <el-select v-model='machineRoomForm.state' placeholder='请选择开放状态'>
-                        <el-option value='0' label='开放'></el-option>
-                        <el-option value='1' label='关闭'></el-option>
+                        <el-option value='1' label='开放'></el-option>
+                        <el-option value='0' label='关闭'></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item>
@@ -20,7 +20,7 @@
             </el-form>
         </div>
         <div class='handle-group'>
-            <el-button type='primary' @click='handleEditOrAdd' plain>+ 新增</el-button>
+            <el-button type='primary' @click='handleEditOrAdd(null,"新增")' plain>+ 新增</el-button>
         </div>
         <div class='table-content'>
             <div class='room-list'>
@@ -29,7 +29,7 @@
                         <div class='room-item-info-name'>{{ data.name }}</div>
                     </div>
                     <div class='room-item-operation'>
-                        <el-button type='primary'>编辑</el-button>
+                        <el-button type='primary' @click='handleEditOrAdd(data,"编辑")'>编辑</el-button>
                         <el-button type='primary'>详情</el-button>
                     </div>
 
@@ -46,26 +46,30 @@
                            :total='totalDataSize'>
             </el-pagination>
         </div>
-
+        <MachineRoomForm v-if='showDialog'
+                         ref='MachineRoomForm'
+                         :action-type='actionType'
+                         :selected-machine-room='selectedMachineRoom'
+                         @closeDialog='closeDialog' />
     </div>
 </template>
 
 <script>
-import { getAccountByPage, deleteAccountById } from '@/api/basic/account';
+import { getMachineRoomByPage, deleteMachineRoomById } from '@/api/basic/machineRoom';
 import UploadForm from '@/components/page/common/UploadForm.vue';
 import { mapMutations, mapState } from 'vuex';
-import AccountForm from '@/components/page/basic/account/modules/AccountForm.vue';
+import MachineRoomForm from '@/components/page/MachineRoom/MachineRoom/modules/MachineRoomForm.vue';
 
 export default {
-    name: 'Account',
+    name: 'MachineRoom',
     components: {
-        AccountForm,
+        MachineRoomForm,
         UploadForm
     },
     created() {
         // 初始化数据
         this.initMachineRoomData();
-        // 监听是否需要刷新书库
+        // 监听是否需要刷新数据
         this.$watch('uploadSuccess', this.refreshData);
     },
     data() {
@@ -78,66 +82,16 @@ export default {
                 state: '' // 开放状态
             },
             // 表格所有数据
-            machineRoomData: [
-                {
-                    id: '1',
-                    name: 'D301',
-                    pattern: '',
-                    principle: 0,
-                    state: 0
-                }, {
-                    id: '2',
-                    name: 'D302',
-                    pattern: '',
-                    principle: 0,
-                    state: 0
-                }, {
-                    id: '3',
-                    name: 'D303',
-                    pattern: '',
-                    principle: 0,
-                    state: 0
-                }, {
-                    id: '1',
-                    name: 'D304',
-                    pattern: '',
-                    principle: 0,
-                    state: 0
-                }, {
-                    id: '1',
-                    name: 'D305',
-                    pattern: '',
-                    principle: 0,
-                    state: 0
-                }, {
-                    id: '1',
-                    name: 'D306',
-                    pattern: '',
-                    principle: 0,
-                    state: 0
-                }, {
-                    id: '1',
-                    name: 'D307',
-                    pattern: '',
-                    principle: 0,
-                    state: 0
-                }, {
-                    id: '1',
-                    name: 'D308',
-                    pattern: '',
-                    principle: 0,
-                    state: 0
-                }
-            ],
+            machineRoomData: [],
             showDialog: false,
             actionType: '',// 操作类型
             // 分页数据
             page: 1,  // 当前第几页
             pageSize: 8,  // 当前每页大小
-            pageSizes: [8, 10, 15], // 每页大小
+            pageSizes: [8, 12, 15], // 每页大小
             totalDataSize: 0, // 数据总条数
-            // 选中的账户
-            selectedAccount: {},
+            // 选中的机房
+            selectedMachineRoom: {},
             uploadFile: {}
 
         };
@@ -146,7 +100,7 @@ export default {
     methods: {
 
         /**
-         * 初始化账户表格信息
+         * 初始化机房表格信息
          * @returns {Promise<void>}
          */
         initMachineRoomData: async function() {
@@ -159,53 +113,57 @@ export default {
                 principle: this.machineRoomForm.principle ? this.machineRoomForm.principle : '',
                 state: this.machineRoomForm.state ? this.machineRoomForm.state : -1
             };
-            // await getAccountByPage(params).then(res => {
-            //     if (res.code === 200) {
-            //         // 存储请求到的后端数据
-            //         this.accountData = res.data.records;
-            //         for (let index = 0; index < this.accountData.length; index++) {
-            //             this.accountData[index].isDisabled === 1 ? this.accountData[index].isDisabled = true : this.accountData[index].isDisabled = false;
-            //         }
-            //         // 设置数据总条数
-            //         this.totalDataSize = res.data.total;
-            //         this.tableLoading = false;
-            //     }
-            // }).catch(err => {
-            //     this.$message.error('请求出错了：' + err);
-            // });
+            await getMachineRoomByPage(params).then(res => {
+                if (res.code === 200) {
+                    // 存储请求到的后端数据
+                    this.machineRoomData = res.data.records;
+                    for (let index = 0; index < this.machineRoomData.length; index++) {
+                        this.machineRoomData[index].isDisabled === 1 ? this.machineRoomData[index].isDisabled = true : this.machineRoomData[index].isDisabled = false;
+                    }
+                    // 设置数据总条数
+                    this.totalDataSize = res.data.total;
+                    this.tableLoading = false;
+                }
+            }).catch(err => {
+                this.$message.error('请求出错了：' + err);
+            });
         },
         /**
-         * 添加账户
+         * 编辑或者添加车辆
+         * @param row 选中行
+         * @param type 操作类型（新增，删除）
          */
         handleEditOrAdd(row, type) {
             this.actionType = type;
             if (this.actionType === '新增') {
-                this.selectedAccount = {
-                    username: '',
-                    password: ''
+                this.selectedMachineRoom = {
+                    name: '',
+                    pattern: '',
+                    principal: '',
+                    state: ''
                 };
             } else {
-                this.selectedAccount = row;
+                this.selectedMachineRoom = row;
+                // console.log(this.selectedMachineRoom)
             }
             this.showDialog = true;
             // 对话框展开
             this.$nextTick(() => {
-                this.$refs['accountForm'].showDialog = true;
+                this.$refs['MachineRoomForm'].showDialog = true;
             });
-
         },
         /**
-         * 根据id删除账户
+         * 根据id删除机房
          * @param id
          */
         handleDelete(id) {
-            this.$confirm('此操作将永久删除账户信息, 是否继续?', '确定删除', {
+            this.$confirm('此操作将永久删除机房信息, 是否继续?', '确定删除', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
                 // 批量删除或单条数据删除，走同一个后端接口
-                deleteAccountById(id).then(res => {
+                deleteMachineRoomById(id).then(res => {
                     if (res.code === 200) {
                         this.$message({
                             type: 'success',
@@ -246,6 +204,18 @@ export default {
         querySubmit() {
             this.page = 1;  // 设置查询第page页或者第一页
             this.initMachineRoomData();
+        },
+        /**
+         * 关闭对话框
+         * @param changeInfo 数据更新（0：未更新，1：更新）
+         */
+        closeDialog(changeInfo) {
+            // 数据改变，重新刷新表格数据
+            if (changeInfo) {
+                this.initMachineRoomData();
+            }
+            // 关闭对话框
+            this.showDialog = false;
         }
 
     }

@@ -23,7 +23,6 @@
                 <el-input v-model='studentForm.telephone' placeholder='请输入联系电话'></el-input>
             </el-form-item>
 
-
             <el-form-item>
                 <el-button @click='closeDialog(0)'>取消</el-button>
                 <el-button type='primary' @click="submitForm('studentForm')">提交</el-button>
@@ -33,7 +32,7 @@
 </template>
 
 <script>
-import { editStudent } from '@/api/basic/student';
+import { addStudent, editStudent } from '@/api/basic/student';
 import { checkValidPhone } from '@/utils/validate';
 
 export default {
@@ -60,7 +59,7 @@ export default {
             studentForm: { ...this.selectedStudent },
             // 表单校验规则
             rules: {
-                type: [
+                studentNo: [
                     { required: true, message: '请输入学号', trigger: 'blur' },
                     { min: 6, max: 10, message: '长度至少 6 个字符长度', trigger: 'blur' }
                 ],
@@ -80,8 +79,19 @@ export default {
         };
     },
     created() {
+        this.changeShowData()
     },
     methods: {
+        /**
+         * 为了展示需要编辑的表单数据
+         * 1. 性别由数字转字符串
+         * 2. 区域码由字符串转数组
+         */
+        changeShowData() {
+            if (this.actionType === '编辑') {
+                this.studentForm.sex = this.studentForm.sex.toString()
+            }
+        },
         /**
          * 关闭对话框
          * @param changeInfo 数据是否需要刷新
@@ -105,7 +115,18 @@ export default {
                 if (valid) {
                     let params = { ...this.studentForm };
                     if (this.actionType === '新增') {
-
+                        /**
+                         * 新增车辆信息
+                         */
+                        addStudent(params).then(res => {
+                            if (res.code === 200) {
+                                this.$message({type: 'success', message: '添加成功！'})
+                                // 关闭对话框同时需要刷新数据
+                                this.closeDialog(1)
+                            }
+                        }).catch(err => {
+                            this.$message.error('请求出错了：' + err)
+                        })
                     } else {
                         /**
                          * 编辑学生信息

@@ -10,8 +10,8 @@
                 </el-form-item>
                 <el-form-item label='开放状态'>
                     <el-select v-model='machineRoomForm.state' placeholder='请选择开放状态'>
-                        <el-option value='0' label='开放'></el-option>
-                        <el-option value='1' label='关闭'></el-option>
+                        <el-option value='1' label='开放'></el-option>
+                        <el-option value='0' label='关闭'></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item>
@@ -19,14 +19,15 @@
                 </el-form-item>
             </el-form>
         </div>
-        <div class='handle-group'>
-            <el-button type='primary' @click='handleEditOrAdd' plain>+ 新增</el-button>
-        </div>
+
         <div class='table-content'>
             <div class='room-list'>
                 <div class='room-item' v-for='(data,index) in machineRoomData' :key='index'>
                     <div class='room-item-info'>
                         <div class='room-item-info-name'>{{ data.name }}</div>
+                    </div>
+                    <div class='room-item-operation'>
+                        <el-button type='primary'>上机</el-button>
                     </div>
 
                 </div>
@@ -51,6 +52,7 @@ import { getAccountByPage, deleteAccountById } from '@/api/basic/account';
 import UploadForm from '@/components/page/common/UploadForm.vue';
 import { mapMutations, mapState } from 'vuex';
 import AccountForm from '@/components/page/basic/account/modules/AccountForm.vue';
+import { getMachineRoomByPage } from '@/api/basic/machineRoom';
 
 export default {
     name: 'BoardComputer',
@@ -74,63 +76,13 @@ export default {
                 state: '' // 开放状态
             },
             // 表格所有数据
-            machineRoomData: [
-                {
-                    id: '1',
-                    name: 'D301',
-                    pattern: '',
-                    principle: 0,
-                    state: 0
-                }, {
-                    id: '2',
-                    name: 'D302',
-                    pattern: '',
-                    principle: 0,
-                    state: 0
-                }, {
-                    id: '3',
-                    name: 'D303',
-                    pattern: '',
-                    principle: 0,
-                    state: 0
-                }, {
-                    id: '1',
-                    name: 'D304',
-                    pattern: '',
-                    principle: 0,
-                    state: 0
-                }, {
-                    id: '1',
-                    name: 'D305',
-                    pattern: '',
-                    principle: 0,
-                    state: 0
-                }, {
-                    id: '1',
-                    name: 'D306',
-                    pattern: '',
-                    principle: 0,
-                    state: 0
-                }, {
-                    id: '1',
-                    name: 'D307',
-                    pattern: '',
-                    principle: 0,
-                    state: 0
-                }, {
-                    id: '1',
-                    name: 'D308',
-                    pattern: '',
-                    principle: 0,
-                    state: 0
-                }
-            ],
+            machineRoomData: [],
             showDialog: false,
             actionType: '',// 操作类型
             // 分页数据
             page: 1,  // 当前第几页
             pageSize: 8,  // 当前每页大小
-            pageSizes: [8, 10, 15], // 每页大小
+            pageSizes: [8, 12, 15], // 每页大小
             totalDataSize: 0, // 数据总条数
             // 选中的账户
             selectedAccount: {},
@@ -155,70 +107,20 @@ export default {
                 principle: this.machineRoomForm.principle ? this.machineRoomForm.principle : '',
                 state: this.machineRoomForm.state ? this.machineRoomForm.state : -1
             };
-            // await getAccountByPage(params).then(res => {
-            //     if (res.code === 200) {
-            //         // 存储请求到的后端数据
-            //         this.accountData = res.data.records;
-            //         for (let index = 0; index < this.accountData.length; index++) {
-            //             this.accountData[index].isDisabled === 1 ? this.accountData[index].isDisabled = true : this.accountData[index].isDisabled = false;
-            //         }
-            //         // 设置数据总条数
-            //         this.totalDataSize = res.data.total;
-            //         this.tableLoading = false;
-            //     }
-            // }).catch(err => {
-            //     this.$message.error('请求出错了：' + err);
-            // });
-        },
-        /**
-         * 添加账户
-         */
-        handleEditOrAdd(row, type) {
-            this.actionType = type;
-            if (this.actionType === '新增') {
-                this.selectedAccount = {
-                    username: '',
-                    password: ''
-                };
-            } else {
-                this.selectedAccount = row;
-            }
-            this.showDialog = true;
-            // 对话框展开
-            this.$nextTick(() => {
-                this.$refs['accountForm'].showDialog = true;
-            });
+            await getMachineRoomByPage(params).then(res => {
+                if (res.code === 200) {
+                    // 存储请求到的后端数据
+                    this.machineRoomData = res.data.records;
 
-        },
-        /**
-         * 根据id删除账户
-         * @param id
-         */
-        handleDelete(id) {
-            this.$confirm('此操作将永久删除账户信息, 是否继续?', '确定删除', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                type: 'warning'
-            }).then(() => {
-                // 批量删除或单条数据删除，走同一个后端接口
-                deleteAccountById(id).then(res => {
-                    if (res.code === 200) {
-                        this.$message({
-                            type: 'success',
-                            message: '删除成功！'
-                        });
-                        // 重新查询更新数据
-                        this.querySubmit();
-                    } else {
-                        this.$message({ type: 'error', message: res.msg || '操作失败' });
-                    }
-                }).catch(err => {
-                    this.$message({ type: 'error', message: '请求出错了：' + err });
-                });
-            }).catch(() => {
-                this.$message({ type: 'info', message: '已取消删除' });
+                    // 设置数据总条数
+                    this.totalDataSize = res.data.total;
+                    this.tableLoading = false;
+                }
+            }).catch(err => {
+                this.$message.error('请求出错了：' + err);
             });
         },
+
         /**
          * 切换每页多少条数据
          * @param val  每页数据量
@@ -237,7 +139,7 @@ export default {
         },
 
         /**
-         * 条件查询角色
+         * 条件查询
          */
         querySubmit() {
             this.page = 1;  // 设置查询第page页或者第一页

@@ -4,7 +4,7 @@
             <el-form :inline='true' :model='maintenanceRecordForm' class='demo-form-inline'>
 
                 <el-form-item label='电脑编号'>
-                    <el-input v-model='maintenanceRecordForm.computer' placeholder='请输入电脑编号'></el-input>
+                    <el-input v-model='maintenanceRecordForm.number' placeholder='请输入电脑编号'></el-input>
                 </el-form-item>
 
                 <el-form-item label='日期'>
@@ -115,9 +115,8 @@ export default {
             const params = {
                 page: this.page,
                 pageSize: this.pageSize,
-                licensePlate: this.maintenanceRecordForm.licensePlate ? this.maintenanceRecordForm.licensePlate : '',
-                status: this.maintenanceRecordForm.status ? this.maintenanceRecordForm.status : 0,
-                type: this.maintenanceRecordForm.type ? this.maintenanceRecordForm.type : 0
+                number: this.maintenanceRecordForm.number ? this.maintenanceRecordForm.number : '',
+                time: this.maintenanceRecordForm.time ? this.maintenanceRecordForm.time : '',
             };
             await getMaintenanceRecordByPage(params).then(res => {
                 if (res.code === 200) {

@@ -2,7 +2,6 @@
     <div class='container'>
         <div class='form-content'>
             <el-form :inline='true' :model='loginLogForm' class='demo-form-inline'>
-
                 <el-form-item label='用户名'>
                     <el-input v-model='loginLogForm.username' placeholder='请输入用户名'></el-input>
                 </el-form-item>
@@ -23,7 +22,7 @@
                 </el-table-column>
                 <el-table-column label='序号' type='index' width='55'>
                 </el-table-column>
-                <el-table-column prop='username' label='运输单号' width='160'>
+                <el-table-column prop='username' label='用户' width='160'>
 
                 </el-table-column>
                 <el-table-column prop='loginTime' label='登陆时间' width='160'>
@@ -84,9 +83,7 @@ export default {
             pageSizes: [8, 10, 15], // 每页大小
             totalDataSize: 0,  // 数据总条数
             multipleSelectionLoginLog: [],  // 批量选中登录日志数据的id
-            loginLogData: [], // 登录日志所有数据
-            loginLogoptions: [], //登录日志职位下拉框（查询）
-            driveroptions: [] //登录日志部门下拉框（查询）
+            loginLogData: [] // 登录日志所有数据
         };
     },
     methods: {
@@ -206,7 +203,7 @@ export default {
     border-bottom: 1px solid #dfe6ec;
     border-left: 1px solid #dfe6ec;
     border-right: 1px solid #dfe6ec;
-    margin-top: 0px;
+    margin-top: 0;
     height: 48px;
     display: flex;
     align-items: center;

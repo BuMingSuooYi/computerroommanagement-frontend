@@ -6,10 +6,10 @@
                 <el-form-item label='学号'>
                     <el-input v-model='studentForm.studentNo' placeholder='请输入学号'></el-input>
                 </el-form-item>
-                <el-form-item label='学号'>
+                <el-form-item label='姓名'>
                     <el-input v-model='studentForm.name' placeholder='请输入学生姓名'></el-input>
                 </el-form-item>
-                <el-form-item label='学号'>
+                <el-form-item label='班级'>
                     <el-input v-model='studentForm.clazz' placeholder='请输入班级'></el-input>
                 </el-form-item>
 
@@ -27,26 +27,30 @@
                       stripe
                       style='width: 100%;background-color: #3A71A8' :header-cell-style="{ background: '#f5f7fa' }"
                       @selection-change='handleSelectionChange'>
-                <el-table-column type='selection' width='55'>
+                <el-table-column type='selection' width='80'>
                 </el-table-column>
-                <el-table-column label='序号' type='index' width='50'>
+                <el-table-column label='序号' type='index' width='100'>
+                    <template slot-scope="scope">
+                        <!-- 自定义索引列的内容 -->
+                        <span>{{ scope.$index+(page-1)*pageSize+1 }}</span>
+                    </template>
                 </el-table-column>
                 <el-table-column prop='studentNo' label='学号' width='120'>
                 </el-table-column>
 
-                <el-table-column prop='name' label='姓名' width='120'>
+                <el-table-column prop='name' label='姓名' width='160'>
                 </el-table-column>
 
-                <el-table-column prop='sex' label='性别' width='120'>
+                <el-table-column prop='sex' label='性别' width='160'>
                     <template slot-scope='scope'>
                         <span v-if='scope.row.sex === 0'>女</span>
                         <span v-else-if='scope.row.sex === 1'>男</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop='clazz' label='班级' width='120'>
+                <el-table-column prop='clazz' label='班级' width='160'>
                 </el-table-column>
 
-                <el-table-column prop='telephone' label='联系电话' width='120'>
+                <el-table-column prop='telephone' label='联系电话' width='180'>
                 </el-table-column>
 
                 <el-table-column label='操作'>
@@ -73,7 +77,6 @@
 <script>
 import { deleteStudentById, getStudentByPage } from '@/api/basic/student';
 import StudentForm from '@/components/page/student/modules/StudentForm.vue';
-
 
 export default {
     name: 'Student',
@@ -116,8 +119,8 @@ export default {
                 page: this.page,
                 pageSize: this.pageSize,
                 studentNo: this.studentForm.studentNo ? this.studentForm.studentNo : '',
-                name: this.studentForm.name ? this.studentForm.name : 0,
-                clazz: this.studentForm.clazz ? this.studentForm.clazz : 0
+                name: this.studentForm.name ? this.studentForm.name : '',
+                clazz: this.studentForm.clazz ? this.studentForm.clazz : ''
             };
             await getStudentByPage(params).then(res => {
                 if (res.code === 200) {
@@ -260,7 +263,7 @@ export default {
     border-bottom: 1px solid #dfe6ec;
     border-left: 1px solid #dfe6ec;
     border-right: 1px solid #dfe6ec;
-    margin-top: 0px;
+    margin-top: 0;
     height: 48px;
     display: flex;
     align-items: center;

@@ -5,18 +5,23 @@
                 <el-input v-model='sectionForm.number' placeholder='请输入节次'></el-input>
             </el-form-item>
             <el-form-item label='起始时间' prop='licensePlate'>
-                <el-date-picker
+                <el-time-picker
                     v-model='sectionForm.startTime'
-                    type='date'
-                    placeholder='请选择起始日期'>
-                </el-date-picker>
+                    placeholder='请选择起始时间'
+                    type='time'
+                    value-format='HH:mm:ss'
+                >
+                </el-time-picker>
+
             </el-form-item>
             <el-form-item label='结束时间' prop='licensePlate'>
-                <el-date-picker
+                <el-time-picker
                     v-model='sectionForm.endTime'
-                    type='date'
-                    placeholder='请选择结束日期'>
-                </el-date-picker>
+                    type='time'
+                    value-format='HH:mm:ss'
+                    placeholder='请选择结束时间'
+                >
+                </el-time-picker>
             </el-form-item>
 
             <el-form-item>
@@ -56,20 +61,9 @@ export default {
         };
     },
     created() {
-        this.changeShowData();
     },
     methods: {
-        /**
-         * 为了展示需要编辑的表单数据
-         * 1. 性别由数字转字符串
-         * 2. 区域码由字符串转数组
-         */
-        changeShowData() {
-            if (this.actionType === '编辑') {
-                this.sectionForm.type = this.sectionForm.type.toString();
-                this.sectionForm.status = this.sectionForm.status.toString();
-            }
-        },
+
         /**
          * 关闭对话框
          * @param changeInfo 数据是否需要刷新
@@ -92,9 +86,10 @@ export default {
             this.$refs[formName].validate((valid) => {
                 if (valid) {
                     let params = { ...this.sectionForm };
+                    console.log(params);
                     if (this.actionType === '新增') {
                         /**
-                         * 新增车辆信息
+                         * 新增节次信息
                          */
                         addSection(params).then(res => {
                             if (res.code === 200) {
@@ -107,11 +102,11 @@ export default {
                         });
                     } else {
                         /**
-                         * 编辑车辆信息
+                         * 编辑节次信息
                          */
                         editSection(params).then(res => {
                             if (res.code === 200) {
-                                this.$message({ type: 'success', message: '车辆信息更新成功！' });
+                                this.$message({ type: 'success', message: '节次信息更新成功！' });
                                 // 关闭对话框同时需要刷新数据
                                 this.closeDialog(1);
                             }

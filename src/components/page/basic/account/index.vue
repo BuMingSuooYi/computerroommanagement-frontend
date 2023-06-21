@@ -6,14 +6,14 @@
                     <el-input v-model.trim='accountForm.username' placeholder='请输入用户名'></el-input>
                 </el-form-item>
                 <el-form-item label='人员类型'>
-                    <el-select v-model='accountForm.type' placeholder='请选择人员类型'>
+                    <el-select v-model='accountForm.type' placeholder='请选择人员类型' clearable>
                         <el-option value='0' label='系统管理员'></el-option>
                         <el-option value='1' label='教师'></el-option>
                         <el-option value='2' label='学生'></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label='是否账户禁用'>
-                    <el-select v-model='accountForm.isDisabled' placeholder='请选择是否账户禁用'>
+                    <el-select v-model='accountForm.isDisabled' placeholder='请选择是否账户禁用' clearable>
                         <el-option value='0' label='未禁用'></el-option>
                         <el-option value='1' label='禁用'></el-option>
                     </el-select>
@@ -27,7 +27,7 @@
             <el-button type='success' @click='showUploadFileDialog'>上传<i class='el-icon-upload el-icon--right'></i>
             </el-button>
             <el-button type='success'>下载<i class='el-icon-download el-icon--right'></i></el-button>
-            <el-button type='primary' @click='handleEditOrAdd' plain>+ 新增</el-button>
+            <el-button type='primary' @click='handleEditOrAdd(null,"新增")' plain>+ 新增</el-button>
         </div>
         <div class='table-content'>
             <el-table v-loading='tableLoading'
@@ -65,7 +65,7 @@
 
                 <el-table-column label='操作' fixed='right'>
                     <template slot-scope='scope'>
-                        <el-button size='mini' type='danger' @click='handleDelete(null, scope.row.id)'>删除
+                        <el-button size='mini' type='danger' @click='handleDelete( scope.row.id)'>删除
                         </el-button>
                     </template>
                 </el-table-column>
@@ -89,7 +89,7 @@
 </template>
 
 <script>
-import { getAccountByPage, deleteAccountById } from '@/api/basic/account';
+import { getAccountByPage, deleteAccountById, editAccount } from '@/api/basic/account';
 import UploadForm from '@/components/page/common/UploadForm.vue';
 import { mapMutations, mapState } from 'vuex';
 import AccountForm from '@/components/page/basic/account/modules/AccountForm.vue';
@@ -119,17 +119,7 @@ export default {
                 isDisabled: '' // 账户是否禁用
             },
             // 表格所有数据
-            accountData: [
-                {
-                    id: '1',
-                    username: '张三',
-                    type: 0,
-                    isDisabled: '0',
-                    isDeleted: '0',
-                    createTime: '2022.04.01 12:00:00',
-                    updateTime: '2022.04.01 12:00:00'
-                }
-            ],
+            accountData: [],
             showDialog: false,
             actionType: '',// 操作类型
             // 分页数据
@@ -185,6 +175,7 @@ export default {
                 if (res.code === 200) {
                     // 存储请求到的后端数据
                     this.accountData = res.data.records;
+                    console.log(this.accountData);
                     for (let index = 0; index < this.accountData.length; index++) {
                         this.accountData[index].isDisabled === 1 ? this.accountData[index].isDisabled = true : this.accountData[index].isDisabled = false;
                     }
@@ -204,7 +195,8 @@ export default {
             if (this.actionType === '新增') {
                 this.selectedAccount = {
                     username: '',
-                    password: ''
+                    password: '',
+                    type: ''
                 };
             } else {
                 this.selectedAccount = row;
@@ -243,6 +235,23 @@ export default {
                 });
             }).catch(() => {
                 this.$message({ type: 'info', message: '已取消删除' });
+            });
+        },
+        /**
+         * 禁用操作
+         * @param $event
+         * @param row
+         */
+        changeStatus($event, row) {
+            //前端显示的数据
+            row.isDisabled === true ? row.isDisabled = 1 : row.isDisabled = 0; //true为1，false为0
+            editAccount(row).then(res => {
+                if (res.code === 200) {
+                    this.$message({ type: 'success', message: '账户信息更新成功！' });
+                    this.querySubmit();
+                }
+            }).catch(err => {
+                this.$message.error('请求出错了：' + err);
             });
         },
         /**
@@ -300,7 +309,7 @@ export default {
     border-bottom: 1px solid #dfe6ec;
     border-left: 1px solid #dfe6ec;
     border-right: 1px solid #dfe6ec;
-    margin-top: 0px;
+    margin-top: 0;
     height: 48px;
     display: flex;
     align-items: center;

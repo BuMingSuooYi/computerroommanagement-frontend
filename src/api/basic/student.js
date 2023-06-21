@@ -19,6 +19,21 @@ export const getStudentByPage = (params) => {
     });
 };
 
+
+/**
+ * 添加学时
+ * @param params Student对象
+ * @returns {AxiosPromise} Axios请求
+ */
+export const addStudent = (params) => {
+    return request({
+        url: `${baseURL}`,
+        method: 'POST',
+        data: { ...params }
+    });
+};
+
+
 /**
  * 根据ID删除学生
  * @param id 学生ID

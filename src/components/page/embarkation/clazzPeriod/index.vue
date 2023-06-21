@@ -18,18 +18,24 @@
         </div>
 
         <div class='table-content'>
-            <el-table  ref='multipleTable' :data='PeriodData' tooltip-effect='dark' border
-                      stripe
-                      style='width: 100%;background-color: #3A71A8' :header-cell-style="{ background: '#f5f7fa' }"
-                      @selection-change='handleSelectionChange'>
-                <el-table-column type='selection' width='60'>
+            <el-table
+                v-loading='tableLoading'
+                ref='multipleTable' :data='PeriodData' tooltip-effect='dark' border
+                stripe
+                style='width: 100%;background-color: #3A71A8' :header-cell-style="{ background: '#f5f7fa' }"
+                @selection-change='handleSelectionChange'>
+                <el-table-column type='selection' width='100'>
                 </el-table-column>
-                <el-table-column label='序号' type='index' width='100'>
+                <el-table-column label='序号' type='index' width='180'>
+                    <template slot-scope="scope">
+                        <!-- 自定义索引列的内容 -->
+                        <span>{{ scope.$index+(page-1)*pageSize+1 }}</span>
+                    </template>
                 </el-table-column>
 
-                <el-table-column prop='clazz' label='班级' width='150'>
+                <el-table-column prop='clazz' label='班级' width='200'>
                 </el-table-column>
-                <el-table-column prop='time' label='学时' width='150'>
+                <el-table-column prop='time' label='学时' width='200'>
                 </el-table-column>
 
                 <el-table-column label='操作'>
@@ -59,6 +65,7 @@
 
 <script>
 import PeriodForm from '@/components/page/embarkation/clazzPeriod/modules/PeriodForm.vue';
+import { deleteClazzPeriodById, getClazzPeriodByPage } from '@/api/basic/clazzPeriod';
 
 export default {
     name: 'Period',
@@ -81,8 +88,8 @@ export default {
             },
             // 分页数据
             page: 1,  // 当前第几页
-            pageSize: 8,  // 当前每页大小
-            pageSizes: [8, 10, 15], // 每页大小
+            pageSize: 6,  // 当前每页大小
+            pageSizes: [6, 10, 15], // 每页大小
             totalDataSize: 0,  // 数据总条数
             multipleSelectionPeriod: [],  // 批量选中班级学时数据的id
             PeriodData: [] // 班级学时所有数据
@@ -102,19 +109,18 @@ export default {
                 clazz: this.PeriodForm.clazz ? this.PeriodForm.clazz : '',
                 time: this.PeriodForm.time ? this.PeriodForm.time : 0
             };
-            // await getPeriodByPage(params).then(res => {
-            //     if (res.code === 200) {
-            //         // 设置数据总条数
-            //         this.totalDataSize = res.data.total;
-            //         this.tableLoading = false;
-            //         // 存储请求到的数据
-            //         this.PeriodData = res.data.records;
-            //     }
-            // }).catch(err => {
-            //     this.$message.error('请求出错了：' + err);
-            // });
+            await getClazzPeriodByPage(params).then(res => {
+                if (res.code === 200) {
+                    // 设置数据总条数
+                    this.totalDataSize = res.data.total;
+                    this.tableLoading = false;
+                    // 存储请求到的数据
+                    this.PeriodData = res.data.records;
+                }
+            }).catch(err => {
+                this.$message.error('请求出错了：' + err);
+            });
         },
-
 
         /**
          * 编辑或者添加班级学时
@@ -159,7 +165,7 @@ export default {
                 type: 'warning'
             }).then(() => {
                 // 批量删除或单条数据删除，走同一个后端接口
-                deletePeriod(type === '批量' ? this.multipleSelectionPeriod.join(',') : id).then(res => {
+                deleteClazzPeriodById(type === '批量' ? this.multipleSelectionPeriod.join(',') : id).then(res => {
                     if (res.code === 200) {
                         this.$message({
                             type: 'success',

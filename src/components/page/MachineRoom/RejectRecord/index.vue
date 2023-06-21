@@ -4,21 +4,22 @@
             <el-form :inline='true' :model='rejectRecordForm' class='demo-form-inline'>
 
                 <el-form-item label='机房'>
-                    <el-select v-model='rejectRecordForm.machineRoomObject.name' placeholder='请选择机房'
+                    <el-select v-model='rejectRecordForm.machineRoom' placeholder='请选择机房'
                                @visible-change='queryAllMachineRoom'>
-                        <el-option v-for='(item, index) in rejectRecordForm.machineRoomObject' :label='item.name'
+                        <el-option v-for='(item, index) in machineRoomOptions' :label='item.name'
                                    :value='item.id'
                                    :key='index'></el-option>
                     </el-select>
                 </el-form-item>
 
-                <el-form-item label='日期'>
-                    <el-date-picker
-                        v-model='rejectRecordForm.time'
-                        type='date'
-                        placeholder='请选择日期'>
-                    </el-date-picker>
-                </el-form-item>
+                <!--                <el-form-item label='日期'>-->
+                <!--                    <el-date-picker v-model='rejectRecordForm.time'-->
+                <!--                                    clearable-->
+                <!--                                    value-format='yyyy-MM-dd HH:mm:ss'-->
+                <!--                                    type='date'-->
+                <!--                                    placeholder='选择日期'-->
+                <!--                    ></el-date-picker>-->
+                <!--                </el-form-item>-->
 
                 <el-form-item>
                     <el-button type='primary' icon='el-icon-search' @click='querySubmit'>查询</el-button>
@@ -34,23 +35,29 @@
                       stripe
                       style='width: 100%;background-color: #3A71A8' :header-cell-style="{ background: '#f5f7fa' }"
                       @selection-change='handleSelectionChange'>
-                <el-table-column type='selection' width='55'>
+                <el-table-column type='selection' width='80'>
                 </el-table-column>
-                <el-table-column label='序号' type='index' width='50'>
+                <el-table-column label='序号' type='index' width='100'>
+                    <template slot-scope='scope'>
+                        <!-- 自定义索引列的内容 -->
+                        <span>{{ scope.$index + (page - 1) * pageSize + 1 }}</span>
+                    </template>
                 </el-table-column>
 
-                <el-table-column prop='machineRoom' label='机房名称' width='120'>
+                <el-table-column prop='machineRoom' label='机房名称' width='180'>
                     <template slot-scope='scope'>
                         <span>{{ scope.row.machineRoomObject.name }}</span>
                     </template>
                 </el-table-column>
 
-                <el-table-column prop='number' label='节次' width='120'>
+                <el-table-column prop='number' label='节次' width='180'>
                     <template slot-scope='scope'>
                         <span>{{ scope.row.sectionObject.number }}</span>
                     </template>
                 </el-table-column>
 
+                <el-table-column prop='time' label='日期' width='240' :formatter='formatDate'>
+                </el-table-column>
 
                 <el-table-column label='操作'>
                     <template slot-scope='scope'>
@@ -68,7 +75,7 @@
         </div>
 
         <RejectRecordForm v-if='showDialog' ref='rejectRecordForm' :action-type='actionType'
-                          :selected-rejectRecord='selectedRejectRecord'
+                          :selected-reject-record='selectedRejectRecord'
                           @closeDialog='closeDialog' />
 
     </div>
@@ -76,9 +83,9 @@
 
 <script>
 import { deleteRejectRecordById, getRejectRecordByPage } from '@/api/basic/rejectRecord';
-
 import { getAllMachineRoom } from '@/api/basic/machineRoom';
 import RejectRecordForm from '@/components/page/MachineRoom/RejectRecord/modules/RejectRecordForm.vue';
+import { formatDate } from '@/utils/formate';
 
 export default {
     name: 'RejectRecord',
@@ -93,11 +100,12 @@ export default {
             tableLoading: false,  // 加载动画
             showDialog: false,  // 对话框显隐
             actionType: '',  // 操作类型
+            machineRoomOptions: [],
             selectedRejectRecord: {},  // 选中的机房不可用时间数据
             // 机房不可用表单信息(查询条件）
             rejectRecordForm: {
-                machineRoomObject: [], // 机房
-                time: ''//时间
+                machineRoom: '', // 机房
+                time: ''// 日期
             },
             // 分页数据
             page: 1,  // 当前第几页
@@ -109,20 +117,21 @@ export default {
         };
     },
     methods: {
+        formatDate,
         /**
          * 查询所有机房
          */
         queryAllMachineRoom() {
             getAllMachineRoom().then(res => {
                 if (res.code === 200) {
-                    this.rejectRecordForm.machineRoomObject = res.data;
+                    this.machineRoomOptions = res.data;
                 }
             }).catch(err => {
                 this.$message.error('请求出错了：' + err);
             });
         },
         /**
-         * 初始化所有机房不可用时间数据
+         * 获取所有机房不可用时间数据
          * @returns {Promise<void>}
          */
         initRejectRecord: async function() {
@@ -131,9 +140,10 @@ export default {
             const params = {
                 page: this.page,
                 pageSize: this.pageSize,
-                machineRoom: this.rejectRecordForm.machineRoomObject.id ? this.rejectRecordForm.machineRoomObject.id : -1,
+                machineRoom: this.rejectRecordForm.machineRoom ? this.rejectRecordForm.machineRoom : -1,
                 time: this.rejectRecordForm.time ? this.rejectRecordForm.time : ''
             };
+            console.log(params);
             await getRejectRecordByPage(params).then(res => {
                 if (res.code === 200) {
                     // 设置数据总条数
