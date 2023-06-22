@@ -106,6 +106,7 @@ export default {
                     this.tableLoading = false;
                     // 存储请求到的数据
                     this.loginLogData = res.data.records;
+                    console.log(res.data.records);
                 }
             }).catch(err => {
                 this.$message.error('请求出错了：' + err);

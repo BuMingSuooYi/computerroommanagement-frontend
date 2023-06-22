@@ -12,7 +12,6 @@
                     value-format='HH:mm:ss'
                 >
                 </el-time-picker>
-
             </el-form-item>
             <el-form-item label='结束时间' prop='licensePlate'>
                 <el-time-picker
@@ -54,7 +53,7 @@ export default {
             // 表单校验规则
             rules: {
                 number: [
-                    { required: true, message: '请输入节次', trigger: 'blur' },
+                    { required: true, message: '请输入节次', trigger: 'blur' }
                 ]
             }
         };
@@ -62,7 +61,6 @@ export default {
     created() {
     },
     methods: {
-
         /**
          * 关闭对话框
          * @param changeInfo 数据是否需要刷新
@@ -85,7 +83,6 @@ export default {
             this.$refs[formName].validate((valid) => {
                 if (valid) {
                     let params = { ...this.sectionForm };
-                    console.log(params);
                     if (this.actionType === '新增') {
                         /**
                          * 新增节次信息

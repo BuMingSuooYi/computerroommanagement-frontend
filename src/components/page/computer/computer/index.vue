@@ -165,9 +165,8 @@ export default {
                 if (res.code === 200) {
                     // 存储请求到的数据
                     this.computerData = res.data.records;
-                    console.log(this.computerData)
                     // 设置数据总条数
-                    this.totalDataSize = res.data.total;
+                    this.totalDataSize = res.data.records.length;
                     this.tableLoading = false;
                 }
             }).catch(err => {
@@ -259,6 +258,8 @@ export default {
                 this.selectedComputer = {
                     number: '',
                     configuration: '',
+                    computerConfigurationObject: { id: '', name: '' },
+                    machineRoomObject: { id: '', name: '' },
                     machineRoom: '',
                     cameraStand: '',
                     state: ''

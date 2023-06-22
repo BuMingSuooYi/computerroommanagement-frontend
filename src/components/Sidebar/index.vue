@@ -103,7 +103,7 @@ export default {
                         },
                         {
                             index: 'rejectRecord',
-                            title: '状态管理'
+                            title: '开放管理'
                         }
                     ]
                 },

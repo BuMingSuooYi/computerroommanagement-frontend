@@ -124,8 +124,8 @@ export default {
             actionType: '',// 操作类型
             // 分页数据
             page: 1,  // 当前第几页
-            pageSize: 8,  // 当前每页大小
-            pageSizes: [8, 10, 15], // 每页大小
+            pageSize: 6,  // 当前每页大小
+            pageSizes: [6, 10, 15], // 每页大小
             totalDataSize: 0, // 数据总条数
             // 选中的账户
             selectedAccount: {},
@@ -175,7 +175,6 @@ export default {
                 if (res.code === 200) {
                     // 存储请求到的后端数据
                     this.accountData = res.data.records;
-                    console.log(this.accountData);
                     for (let index = 0; index < this.accountData.length; index++) {
                         this.accountData[index].isDisabled === 1 ? this.accountData[index].isDisabled = true : this.accountData[index].isDisabled = false;
                     }

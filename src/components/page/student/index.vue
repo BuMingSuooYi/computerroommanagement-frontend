@@ -30,18 +30,17 @@
                 <el-table-column type='selection' width='80'>
                 </el-table-column>
                 <el-table-column label='序号' type='index' width='100'>
-                    <template slot-scope="scope">
-                        <!-- 自定义索引列的内容 -->
-                        <span>{{ scope.$index+(page-1)*pageSize+1 }}</span>
+                    <template slot-scope='scope'>
+                        <span>{{ scope.$index + (page - 1) * pageSize + 1 }}</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop='studentNo' label='学号' width='120'>
+                <el-table-column prop='studentNo' label='学号' width='120' sortable>
                 </el-table-column>
 
                 <el-table-column prop='name' label='姓名' width='160'>
                 </el-table-column>
 
-                <el-table-column prop='sex' label='性别' width='160'>
+                <el-table-column prop='sex' label='性别' width='140'>
                     <template slot-scope='scope'>
                         <span v-if='scope.row.sex === 0'>女</span>
                         <span v-else-if='scope.row.sex === 1'>男</span>
@@ -53,7 +52,7 @@
                 <el-table-column prop='telephone' label='联系电话' width='180'>
                 </el-table-column>
 
-                <el-table-column label='操作'>
+                <el-table-column label='操作' fixed='right'>
                     <template slot-scope='scope'>
                         <el-button size='mini' @click="handleEditOrAdd(scope.row, '编辑')">编辑
                         </el-button>

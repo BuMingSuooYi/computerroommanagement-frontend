@@ -51,7 +51,7 @@ export default new Router({
                 {
                     path: '/rejectRecord',
                     component: () => import(/* webpackChunkName: "table" */ '../components/page/MachineRoom/RejectRecord/index.vue'),
-                    meta: { title: '状态管理' }
+                    meta: { title: '开放管理' }
                 },
                 // 电脑管理
                 {

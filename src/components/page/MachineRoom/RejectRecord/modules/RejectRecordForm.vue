@@ -1,15 +1,15 @@
 <template>
-    <el-dialog :title="actionType + '车辆'" :visible.sync='showDialog' @close='closeDialog(0)'>
+    <el-dialog :title="actionType + '机房开放时间段'" :visible.sync='showDialog' @close='closeDialog(0)'>
         <el-form :model='rejectRecordForm' :rules='rules' ref='rejectRecordForm' label-width='100px'
                  class='demo-rejectRecordForm'>
 
-
             <el-form-item label='机房' prop='machineRoom'>
-                <el-select v-model='rejectRecordForm.machineRoom'
+                <el-select v-model='rejectRecordForm.machineRoomObject.name'
                            placeholder='请选择机房'
                            @visible-change='queryAllMachineRoom'
                            clearable
                            filterable
+                           @change='selectMachineRoom'
                            :loading='machineRoomOptionsLoading'>
                     <el-option v-for='(item, index) in machineRoomOptions'
                                :label='item.name'
@@ -19,9 +19,10 @@
             </el-form-item>
 
             <el-form-item label='节次' prop='section'>
-                <el-select v-model='rejectRecordForm.section'
+                <el-select v-model='rejectRecordForm.sectionObject.number'
                            placeholder='请选择节次'
                            @visible-change='queryAllSection'
+                           @change='selectSection'
                            :loading='sectionOptionsLoading'
                            clearable
                            filterable>
@@ -38,7 +39,7 @@
                                 clearable
                                 value-format='yyyy-MM-dd HH:mm:ss'
                                 type='datetime'
-                                placeholder='选择日期'
+                                placeholder='请选择日期'
                 ></el-date-picker>
 
             </el-form-item>
@@ -62,7 +63,7 @@ export default {
     props: {
         actionType: {
             type: String,
-            default: '添加车辆'
+            default: '添加机房开放时间段'
         },
         selectedRejectRecord: {
             type: Object
@@ -96,6 +97,12 @@ export default {
         this.changeShowData();
     },
     methods: {
+        selectMachineRoom(val) {
+            this.rejectRecordForm.machineRoom = val;
+        },
+        selectSection(val) {
+            this.rejectRecordForm.section = val;
+        },
         /**
          * 查询所有机房
          */
@@ -125,17 +132,6 @@ export default {
             });
         },
         /**
-         * 为了展示需要编辑的表单数据
-         * 1. 性别由数字转字符串
-         * 2. 区域码由字符串转数组
-         */
-        changeShowData() {
-            if (this.actionType === '编辑') {
-                this.rejectRecordForm.type = this.rejectRecordForm.type.toString();
-                this.rejectRecordForm.status = this.rejectRecordForm.status.toString();
-            }
-        },
-        /**
          * 关闭对话框
          * @param changeInfo 数据是否需要刷新
          */
@@ -153,14 +149,18 @@ export default {
          * @param formName
          */
         submitForm(formName) {
+            // 切换数据
+            // if(this.actionType==='新增'){
+            //     this.rejectRecordForm.machineRoom=this.rejectRecordForm.machineRoomObject.name;
+            //     this.rejectRecordForm.section=this.rejectRecordForm.sectionObject.number;
+            // }
+            let params = { ...this.rejectRecordForm };
             // 校验数据合法性
             this.$refs[formName].validate((valid) => {
                 if (valid) {
-                    let params = { ...this.rejectRecordForm };
-                    console.log(params);
                     if (this.actionType === '新增') {
                         /**
-                         * 新增车辆信息
+                         * 新增机房开放时间段信息
                          */
                         addRejectRecord(params).then(res => {
                             if (res.code === 200) {
@@ -173,11 +173,11 @@ export default {
                         });
                     } else {
                         /**
-                         * 编辑车辆信息
+                         * 编辑机房开放时间段信息
                          */
                         editRejectRecord(params).then(res => {
                             if (res.code === 200) {
-                                this.$message({ type: 'success', message: '车辆信息更新成功！' });
+                                this.$message({ type: 'success', message: '机房开放时间段信息更新成功！' });
                                 // 关闭对话框同时需要刷新数据
                                 this.closeDialog(1);
                             }

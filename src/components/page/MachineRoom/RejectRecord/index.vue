@@ -12,14 +12,14 @@
                     </el-select>
                 </el-form-item>
 
-                <!--                <el-form-item label='日期'>-->
-                <!--                    <el-date-picker v-model='rejectRecordForm.time'-->
-                <!--                                    clearable-->
-                <!--                                    value-format='yyyy-MM-dd HH:mm:ss'-->
-                <!--                                    type='date'-->
-                <!--                                    placeholder='选择日期'-->
-                <!--                    ></el-date-picker>-->
-                <!--                </el-form-item>-->
+                <el-form-item label='日期'>
+                    <el-date-picker v-model='rejectRecordForm.time'
+                                    clearable
+                                    value-format='yyyy-MM-dd HH:mm:ss'
+                                    type='datetime'
+                                    placeholder='请选择日期'
+                    ></el-date-picker>
+                </el-form-item>
 
                 <el-form-item>
                     <el-button type='primary' icon='el-icon-search' @click='querySubmit'>查询</el-button>
@@ -39,7 +39,6 @@
                 </el-table-column>
                 <el-table-column label='序号' type='index' width='100'>
                     <template slot-scope='scope'>
-                        <!-- 自定义索引列的内容 -->
                         <span>{{ scope.$index + (page - 1) * pageSize + 1 }}</span>
                     </template>
                 </el-table-column>
@@ -109,8 +108,8 @@ export default {
             },
             // 分页数据
             page: 1,  // 当前第几页
-            pageSize: 8,  // 当前每页大小
-            pageSizes: [8, 10, 15], // 每页大小
+            pageSize: 6,  // 当前每页大小
+            pageSizes: [6, 10, 15], // 每页大小
             totalDataSize: 0,  // 数据总条数
             multipleSelectionRejectRecord: [],  // 批量选中机房不可用时间数据的id
             rejectRecordData: [] // 机房不可用时间所有数据
@@ -143,7 +142,6 @@ export default {
                 machineRoom: this.rejectRecordForm.machineRoom ? this.rejectRecordForm.machineRoom : -1,
                 time: this.rejectRecordForm.time ? this.rejectRecordForm.time : ''
             };
-            console.log(params);
             await getRejectRecordByPage(params).then(res => {
                 if (res.code === 200) {
                     // 设置数据总条数
@@ -151,6 +149,7 @@ export default {
                     this.tableLoading = false;
                     // 存储请求到的数据
                     this.rejectRecordData = res.data.records;
+                    console.log(res.data)
                 }
             }).catch(err => {
                 this.$message.error('请求出错了：' + err);
@@ -240,6 +239,8 @@ export default {
             this.actionType = type;
             if (this.actionType === '新增') {
                 this.selectedRejectRecord = {
+                    machineRoom: '',
+                    section: '',
                     machineRoomObject: { id: 0, name: '' },
                     sectionObject: { id: 0, number: '' },
                     time: ''

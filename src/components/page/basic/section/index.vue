@@ -69,8 +69,8 @@ export default {
             },
             // 分页数据
             page: 1,  // 当前第几页
-            pageSize: 8,  // 当前每页大小
-            pageSizes: [8, 10, 15], // 每页大小
+            pageSize: 6,  // 当前每页大小
+            pageSizes: [6, 10, 15], // 每页大小
             totalDataSize: 0,  // 数据总条数
             multipleSelectionSection: [],  // 批量选中节次数据的id
             sectionData: [] // 节次所有数据

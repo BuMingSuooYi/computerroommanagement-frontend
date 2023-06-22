@@ -115,9 +115,6 @@ export default {
                 if (res.code === 200) {
                     // 存储请求到的后端数据
                     this.machineRoomData = res.data.records;
-                    for (let index = 0; index < this.machineRoomData.length; index++) {
-                        this.machineRoomData[index].isDisabled === 1 ? this.machineRoomData[index].isDisabled = true : this.machineRoomData[index].isDisabled = false;
-                    }
                     // 设置数据总条数
                     this.totalDataSize = res.data.total;
                     this.tableLoading = false;

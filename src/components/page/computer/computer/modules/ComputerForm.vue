@@ -6,18 +6,21 @@
             </el-form-item>
 
             <el-form-item label='电脑配置' prop='configuration'>
-                <el-select v-model='computerForm.configuration' placeholder='请选择电脑配置'
-                           @visible-change='queryAllComputerConfiguration' clearable>
-                    <el-option v-for='(item, index) in computerConfigurationOptions' :label='item.name'
+                <el-select v-model='computerForm.computerConfigurationObject.name' placeholder='请选择电脑配置'
+                           @visible-change='queryAllComputerConfiguration' @change='selectComputerConfiguration'
+                           clearable>
+                    <el-option v-for='(item, index) in computerConfigurationOptions'
+                               :label='item.name'
                                :value='item.id'
                                :key='index'></el-option>
                 </el-select>
             </el-form-item>
 
             <el-form-item label='隶属机房' prop='machineRoom'>
-                <el-select v-model='computerForm.machineRoom' placeholder='请选择隶属机房'
-                           @visible-change='queryAllMachineRoom' clearable>
-                    <el-option v-for='(item, index) in machineRoomOptions' :label='item.name'
+                <el-select v-model='computerForm.machineRoomObject.name' placeholder='请选择隶属机房'
+                           @visible-change='queryAllMachineRoom' @change='selectMachineRoom' clearable>
+                    <el-option v-for='(item, index) in machineRoomOptions'
+                               :label='item.name'
                                :value='item.id'
                                :key='index'></el-option>
                 </el-select>
@@ -28,7 +31,7 @@
             </el-form-item>
 
             <el-form-item label='状态' prop='state'>
-                <el-select v-model='computerForm.state' placeholder='请选择性别' clearable>
+                <el-select v-model='computerForm.state' placeholder='请选择状态' clearable>
                     <el-option key='0' label='空闲' value='0'>
                     </el-option>
                     <el-option key='1' label='使用中' value='1'>
@@ -89,6 +92,12 @@ export default {
         this.changeShowData();
     },
     methods: {
+        selectMachineRoom(val) {
+            this.computerForm.machineRoom = val;
+        },
+        selectComputerConfiguration(val) {
+            this.computerForm.configuration = val;
+        },
         /**
          * 查询所有机房
          */
@@ -118,9 +127,6 @@ export default {
          */
         changeShowData() {
             if (this.actionType === '编辑') {
-                console.log(this.computerForm)
-                this.computerForm.configuration=this.computerForm.computerConfigurationObject.name;
-                this.computerForm.machineRoom=this.computerForm.machineRoomObject.name;
                 this.computerForm.state = this.computerForm.state.toString();
             }
         },
@@ -141,11 +147,10 @@ export default {
          * @param formName
          */
         submitForm(formName) {
+            let params = { ...this.computerForm };
             // 校验数据合法性
             this.$refs[formName].validate((valid) => {
                 if (valid) {
-                    let params = { ...this.computerForm };
-                    console.log(params)
                     if (this.actionType === '新增') {
                         /**
                          * 新增电脑信息
