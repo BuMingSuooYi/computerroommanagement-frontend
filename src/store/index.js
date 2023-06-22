@@ -8,7 +8,8 @@ export default new Vuex.Store({
         // 控制文件上传对话框隐藏显示
         showUploadDialog: false,
         // 文件上传成功
-        uploadSuccess: false
+        uploadSuccess: false,
+        machineRoomData: {}
     },
     mutations: {
         /**
@@ -26,6 +27,12 @@ export default new Vuex.Store({
          */
         refreshTableData(state, value) {
             state.uploadSuccess = value;
+        },
+        Set_MachineRoom(state, data) {
+            state.machineRoomData = data;
+        },
+        Clear_MachineRoom(state) {
+            state.machineRoomData = {};
         }
     }
 });

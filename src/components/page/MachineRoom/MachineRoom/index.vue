@@ -30,7 +30,7 @@
                     </div>
                     <div class='room-item-operation'>
                         <el-button type='primary' @click='handleEditOrAdd(data,"编辑")'>编辑</el-button>
-                        <el-button type='primary'>详情</el-button>
+                        <el-button type='primary' @click='seeDetails(data)'>详情</el-button>
                     </div>
                 </div>
             </div>
@@ -96,6 +96,14 @@ export default {
     },
 
     methods: {
+        /**
+         * 查看机房详情
+         * @param data
+         */
+        seeDetails(data) {
+            this.$store.commit('Set_MachineRoom', data);
+            this.$router.push('/machineRoomDetail');
+        },
 
         /**
          * 初始化机房表格信息

@@ -126,8 +126,8 @@ export default {
             },
             // 分页数据
             page: 1,  // 当前第几页
-            pageSize: 8,  // 当前每页大小
-            pageSizes: [8, 10, 15], // 每页大小
+            pageSize: 6,  // 当前每页大小
+            pageSizes: [6, 10, 15], // 每页大小
             totalDataSize: 0,  // 数据总条数
             multipleSelectionComputer: [],  // 批量选中电脑数据的id
             computerData: [] // 电脑所有数据

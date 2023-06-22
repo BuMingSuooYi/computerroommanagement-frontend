@@ -31,6 +31,19 @@ export const getAllMachineRoom = () => {
 };
 
 /**
+ * 根据机房名称查询所有电脑
+ * @param id
+ * @returns {*}
+ */
+export const getComputerByMachineRoom = (id) => {
+    return request({
+        url: `${baseURL}/page/computer`,
+        method: 'GET',
+        params: { id }
+    });
+};
+
+/**
  * 添加机房
  * @param params machineRoom对象
  * @returns {AxiosPromise} Axios请求

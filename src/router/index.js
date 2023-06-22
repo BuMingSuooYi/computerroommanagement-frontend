@@ -53,6 +53,11 @@ export default new Router({
                     component: () => import(/* webpackChunkName: "table" */ '../components/page/MachineRoom/RejectRecord/index.vue'),
                     meta: { title: '开放管理' }
                 },
+                {
+                    path: '/machineRoomDetail',
+                    component: () => import(/* webpackChunkName: "table" */ '../components/page/MachineRoom/MachineRoomDetail/index.vue'),
+                    meta: { title: '机房机位管理' }
+                },
                 // 电脑管理
                 {
                     path: '/computer',
