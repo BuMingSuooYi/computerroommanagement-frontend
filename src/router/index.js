@@ -81,6 +81,11 @@ export default new Router({
                     meta: { title: '上机管理' }
                 },
                 {
+                    path: '/boardComputerDetail',
+                    component: () => import(/* webpackChunkName: "table" */ '../components/page/embarkation/BoardComputerDetail/index.vue'),
+                    meta: { title: '上机机位管理' }
+                },
+                {
                     path: '/computerRecord',
                     component: () => import(/* webpackChunkName: "table" */ '../components/page/embarkation/computerRecord/index.vue'),
                     meta: { title: '上机记录' }

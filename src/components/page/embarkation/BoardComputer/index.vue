@@ -19,7 +19,6 @@
                 </el-form-item>
             </el-form>
         </div>
-
         <div class='table-content'>
             <div class='room-list'>
                 <div class='room-item' v-for='(data,index) in machineRoomData' :key='index'>
@@ -27,11 +26,9 @@
                         <div class='room-item-info-name'>{{ data.name }}</div>
                     </div>
                     <div class='room-item-operation'>
-                        <el-button type='primary'>上机</el-button>
+                        <el-button type='primary' @click='boardComputer(data)'>上机</el-button>
                     </div>
-
                 </div>
-
             </div>
             <el-pagination background
                            @size-change='handleSizeChange'
@@ -43,27 +40,30 @@
                            :total='totalDataSize'>
             </el-pagination>
         </div>
-
+        <MachineRoomForm v-if='showDialog'
+                         ref='MachineRoomForm'
+                         :action-type='actionType'
+                         :selected-machine-room='selectedMachineRoom'
+                         @closeDialog='closeDialog' />
     </div>
 </template>
 
 <script>
-import { getAccountByPage, deleteAccountById } from '@/api/basic/account';
+import { getMachineRoomByPage } from '@/api/basic/machineRoom';
 import UploadForm from '@/components/page/common/UploadForm.vue';
 import { mapMutations, mapState } from 'vuex';
-import AccountForm from '@/components/page/basic/account/modules/AccountForm.vue';
-import { getMachineRoomByPage } from '@/api/basic/machineRoom';
+import MachineRoomForm from '@/components/page/MachineRoom/MachineRoom/modules/MachineRoomForm.vue';
 
 export default {
-    name: 'BoardComputer',
+    name: 'MachineRoom',
     components: {
-        AccountForm,
+        MachineRoomForm,
         UploadForm
     },
     created() {
         // 初始化数据
         this.initMachineRoomData();
-        // 监听是否需要刷新书库
+        // 监听是否需要刷新数据
         this.$watch('uploadSuccess', this.refreshData);
     },
     data() {
@@ -84,17 +84,24 @@ export default {
             pageSize: 8,  // 当前每页大小
             pageSizes: [8, 12, 15], // 每页大小
             totalDataSize: 0, // 数据总条数
-            // 选中的账户
-            selectedAccount: {},
+            // 选中的机房
+            selectedMachineRoom: {},
             uploadFile: {}
-
         };
     },
 
     methods: {
+        /**
+         * 上机
+         * @param data
+         */
+        boardComputer(data) {
+            this.$store.commit('Set_MachineRoom', data);
+            this.$router.push('/boardComputerDetail');
+        },
 
         /**
-         * 初始化账户表格信息
+         * 初始化机房表格信息
          * @returns {Promise<void>}
          */
         initMachineRoomData: async function() {
@@ -111,7 +118,6 @@ export default {
                 if (res.code === 200) {
                     // 存储请求到的后端数据
                     this.machineRoomData = res.data.records;
-
                     // 设置数据总条数
                     this.totalDataSize = res.data.total;
                     this.tableLoading = false;
@@ -120,7 +126,6 @@ export default {
                 this.$message.error('请求出错了：' + err);
             });
         },
-
         /**
          * 切换每页多少条数据
          * @param val  每页数据量
@@ -139,11 +144,23 @@ export default {
         },
 
         /**
-         * 条件查询
+         * 条件查询角色
          */
         querySubmit() {
             this.page = 1;  // 设置查询第page页或者第一页
             this.initMachineRoomData();
+        },
+        /**
+         * 关闭对话框
+         * @param changeInfo 数据更新（0：未更新，1：更新）
+         */
+        closeDialog(changeInfo) {
+            // 数据改变，重新刷新表格数据
+            if (changeInfo) {
+                this.initMachineRoomData();
+            }
+            // 关闭对话框
+            this.showDialog = false;
         }
 
     }
