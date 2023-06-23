@@ -15,11 +15,11 @@
             :auto-upload='false'
             :before-upload='beforeUploadFile'
             :on-exceed='handleExceed'
-            :on-success="handleUploadSuccess"
-            :on-error="handleUploadError"
+            :on-success='handleUploadSuccess'
+            :on-error='handleUploadError'
 
             :file-list='uploadFile'
-            :action='uploadURL'>
+            :action='url'>
             <i class='el-icon-upload'></i>
             <div class='el-upload__text'>将文件拖到此处，或<em>点击上传</em></div>
             <div class='el-upload__tip' slot='tip'>只能上传excel文件，且不超过1个</div>
@@ -36,19 +36,27 @@ import request from '@/utils/axios';
 import { mapState, mapMutations } from 'vuex';
 
 export default {
+    props: {
+        uploadUrl: {
+            type: String
+        }
+    },
     data() {
         return {
             fileNumLimit: 2,// 文件数量限制
-            uploadURL: request.defaults.baseURL + '/upload',
             uploadFile: [],
-            uploadFlag: false
+            uploadFlag: false,
+            url: request.defaults.baseURL+this.uploadUrl
         };
+    },
+    created() {
     },
     computed: {
         // 使用了mapState辅助函数将showDialog状态映射到组件的showDialog计算属性中
         ...mapState(['showUploadDialog'])
     },
     methods: {
+        request,
         ...mapMutations(['toggleUploadDialog', 'refreshTableData']),
         closeDialog() {
             this.toggleUploadDialog(false);
@@ -58,12 +66,6 @@ export default {
          */
         submitUpload() {
             this.$refs.upload.submit();
-            // 上传成功
-            if (this.uploadFlag) {
-                this.$message.success('上传成功');
-                this.closeDialog();
-                this.refreshTableData(true);
-            }
         },
         /**
          * 移除文件
@@ -93,9 +95,9 @@ export default {
             if (extension !== 'xlsx') {
                 this.$message.warning('只能上传后缀是.xlsx的文件');
                 this.uploadFlag = false;
-                return;
+                // return;
             }
-            this.uploadFlag = true;
+            // this.uploadFlag = true;
         },
         /**
          * 处理超过文件数量限制
@@ -107,10 +109,14 @@ export default {
         },
         handleUploadSuccess(response, file, fileList) {
             // 文件上传成功的处理逻辑
+            this.$message.success('上传成功');
+            this.closeDialog();
+            this.refreshTableData(true);
             console.log('文件上传成功', response, file, fileList);
         },
         handleUploadError(error, file, fileList) {
             // 文件上传失败的处理逻辑
+            this.uploadFlag = false;
             console.log('文件上传失败', error, file, fileList);
         },
         /**

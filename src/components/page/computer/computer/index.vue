@@ -32,16 +32,17 @@
             </el-form>
         </div>
         <div class='handle-group'>
+            <el-button type='success' @click='showUploadFileDialog'>上传<i class='el-icon-upload el-icon--right'></i>
+            </el-button>
+            <el-button type='success'>下载<i class='el-icon-download el-icon--right'></i></el-button>
             <el-button type='primary' @click="handleEditOrAdd(null, '新增')" plain>+ 新增</el-button>
-            <el-button type='danger' @click="handleDelete('批量', null)">批量删除</el-button>
         </div>
         <div class='table-content'>
             <el-table v-loading='tableLoading' ref='multipleTable' :data='computerData' tooltip-effect='dark' border
                       stripe
                       style='width: 100%;background-color: #3A71A8' :header-cell-style="{ background: '#f5f7fa' }"
                       @selection-change='handleSelectionChange'>
-                <el-table-column type='selection' width='80'>
-                </el-table-column>
+                
                 <el-table-column label='序号' type='index' width='100'>
                     <template slot-scope='scope'>
                         <!-- 自定义索引列的内容 -->
@@ -54,13 +55,15 @@
 
                 <el-table-column prop='machineRoom' label='隶属机房' width='180'>
                     <template slot-scope='scope'>
-                        <span>{{ scope.row.machineRoomObject.name }}</span>
+                        <span v-if='scope.row.machineRoomObject!=null'>{{ scope.row.machineRoomObject.name }}</span>
                     </template>
                 </el-table-column>
 
                 <el-table-column prop='configuration' label='电脑配置' width='180'>
                     <template slot-scope='scope'>
-                        <span>{{ scope.row.computerConfigurationObject.name }}</span>
+                        <span
+                            v-if='scope.row.computerConfigurationObject!=null'>{{ scope.row.computerConfigurationObject.name
+                            }}</span>
                     </template>
                 </el-table-column>
 
@@ -91,6 +94,7 @@
             </el-pagination>
         </div>
 
+        <UploadForm :upload-url='uploadUrl' />
         <ComputerForm v-if='showDialog' ref='computerForm' :action-type='actionType'
                       :selected-computer='selectedComputer'
                       @closeDialog='closeDialog' />
@@ -102,17 +106,22 @@
 import { deleteComputerById, getAllComputer, getComputerByPage } from '@/api/basic/computer';
 import ComputerForm from '@/components/page/computer/computer/modules/ComputerForm.vue';
 import { getAllMachineRoom } from '@/api/basic/machineRoom';
+import { mapMutations, mapState } from 'vuex';
+import UploadForm from '@/components/page/common/UploadForm.vue';
 
 export default {
     name: 'Computer',
     components: {
+        UploadForm,
         ComputerForm
     },
     created() {
-        this.initComputer();
+        this.initComputerData();
+        this.$watch('uploadSuccess', this.refreshData);
     },
     data() {
         return {
+            uploadUrl: '/computer/uploadExcel',
             tableLoading: false,  // 加载动画
             showDialog: false,  // 对话框显隐
             actionType: '',  // 操作类型
@@ -133,7 +142,30 @@ export default {
             computerData: [] // 电脑所有数据
         };
     },
+    computed: {
+        ...mapState(['uploadSuccess'])
+    },
     methods: {
+        // 使用了mapMutations辅助函数将toggleUploadDialog mutation映射到组件中的toggleUploadDialog方法。
+        ...mapMutations(['toggleUploadDialog', 'refreshTableData']),
+        /**
+         * 展示上传文件对话框
+         */
+        showUploadFileDialog() {
+            this.toggleUploadDialog(true);
+        },
+        /**
+         * 刷新数据监听
+         * @param newVal
+         * @param oldVal
+         */
+        refreshData(newVal, oldVal) {
+            // 在shouldRefreshData状态变化时执行的操作
+            if (newVal) {
+                this.initComputerData();
+                this.refreshTableData(false);
+            }
+        },
         /**
          * 查询所有机房
          */
@@ -151,7 +183,7 @@ export default {
          * 初始化所有电脑数据
          * @returns {Promise<void>}
          */
-        initComputer: async function() {
+        initComputerData: async function() {
             this.tableLoading = true;
             // 定义请求参数 (查询条件),看文档
             const params = {
@@ -179,7 +211,7 @@ export default {
          */
         handleSizeChange(val) {
             this.pageSize = val;
-            this.initComputer();
+            this.initComputerData();
         },
         /**
          * 切换第几页
@@ -187,7 +219,7 @@ export default {
          */
         handleCurrentChange(val) {
             this.page = val;
-            this.initComputer();
+            this.initComputerData();
         },
         /**
          * 获取所有选中的数据
@@ -245,7 +277,7 @@ export default {
          */
         querySubmit() {
             this.page = 1;  // 设置查询第page页或者第一页
-            this.initComputer();
+            this.initComputerData();
         },
         /**
          * 编辑或者添加电脑
@@ -280,7 +312,7 @@ export default {
         closeDialog(changeInfo) {
             // 数据改变，重新刷新表格数据
             if (changeInfo) {
-                this.initComputer();
+                this.initComputerData();
             }
             // 关闭对话框
             this.showDialog = false;

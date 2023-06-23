@@ -32,7 +32,7 @@
                 <div v-if='computerData' v-for='(r,index) in row' :key='index' class='row'>
                     <div v-for='(c,index) in col' :key='index' class='col item'>
                         <div class='free-computer'
-                             v-if='((r - 1) * col + c)<=computerData.length&&computerData[ (r - 1) * col + c-1].state===0&&((r - 1) * col + c)===computerData[ (r - 1) * col + c-1].cameraStand'>
+                             v-if='hasComputer((r - 1) * col + c)&&hasComputer((r - 1) * col + c)-1===0'>
                             <div class='item-info'>机位{{ (r - 1) * col + c }}</div>
                             <div class='operation-group'>
                                 <el-button type='primary'
@@ -41,14 +41,14 @@
                             </div>
                         </div>
                         <div class='use-computer'
-                             v-else-if='((r - 1) * col + c)<=computerData.length&&computerData[ (r - 1) * col + c-1].state===1&&((r - 1) * col + c)===computerData[ (r - 1) * col + c-1].cameraStand'>
+                             v-else-if='hasComputer((r - 1) * col + c)&&hasComputer((r - 1) * col + c)-1===1'>
                             <div class='item-info'>机位{{ (r - 1) * col + c }}</div>
                             <el-button type='warning'
                                        @click='disembark(computerData[ (r - 1) * col + c-1])'>下机
                             </el-button>
                         </div>
                         <div class='repair-computer'
-                             v-else-if='((r - 1) * col + c)<=computerData.length&&computerData[ (r - 1) * col + c-1].state===2&&((r - 1) * col + c)===computerData[ (r - 1) * col + c-1].cameraStand'>
+                             v-else-if='hasComputer((r - 1) * col + c)&&hasComputer((r - 1) * col + c)-1===2'>
                             <div class='item-info'>机位{{ (r - 1) * col + c }}</div>
                         </div>
                         <div v-else class='null-computer'>
@@ -71,6 +71,8 @@
 <script>
 import { getComputerByMachineRoom } from '@/api/basic/machineRoom';
 import addComputerRecord from '@/components/page/embarkation/BoardComputerDetail/modules/addComputerRecordForm.vue';
+import { deleteStudentById } from '@/api/basic/student';
+import { logoutComputerRecord } from '@/api/basic/computerRecord';
 
 export default {
     name: 'MachineRoomDetail',
@@ -108,6 +110,22 @@ export default {
         };
     },
     methods: {
+        /**
+         * 当前机位有电脑，返回电脑机状态+1(为了bool值)
+         * @param cameraStand
+         * @returns {number}
+         */
+        hasComputer(cameraStand) {
+            for (let i = 0; i < this.computerData.length; i++) {
+                if (this.computerData[i].cameraStand === cameraStand) {
+                    return this.computerData[i].state + 1;
+                }
+            }
+            return -1;
+        },
+        /**
+         * 返回上一步
+         */
         returnBack() {
             this.$store.commit('Clear_MachineRoom');
             this.$router.push('/boardComputer');
@@ -117,10 +135,12 @@ export default {
          */
         initLayout() {
             // 使用split方法拆分字符串
-            const parts = this.machineRoom.pattern.split('*');
-            // 将拆分后的结果转换为数字(10进制)
-            this.row = parseInt(parts[0], 10);
-            this.col = parseInt(parts[1], 10);
+            if (this.machineRoom.pattern) {
+                const parts = this.machineRoom.pattern.split('*');
+                // 将拆分后的结果转换为数字(10进制)
+                this.row = parseInt(parts[0], 10);
+                this.col = parseInt(parts[1], 10);
+            }
         },
 
         /**
@@ -128,15 +148,17 @@ export default {
          * @returns {Promise<void>}
          */
         initComputerData() {
-            let id = this.machineRoom.id;
-            getComputerByMachineRoom(id).then(res => {
-                if (res.code === 200) {
-                    // 存储请求到的后端数据
-                    this.computerData = res.data;
-                }
-            }).catch(err => {
-                this.$message.error('请求出错了：' + err);
-            });
+            if (this.machineRoom.id) {
+                let id = this.machineRoom.id;
+                getComputerByMachineRoom(id).then(res => {
+                    if (res.code === 200) {
+                        // 存储请求到的后端数据
+                        this.computerData = res.data;
+                    }
+                }).catch(err => {
+                    this.$message.error('请求出错了：' + err);
+                });
+            }
         },
         /**
          * 上机
@@ -154,7 +176,24 @@ export default {
          * @param computer
          */
         disembark(computer) {
-
+            this.$confirm('你确定要下机嘛, 是否继续?', '确定下机', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                // 下机操作
+                logoutComputerRecord(computer.id).then(res => {
+                    if (res.code === 200) {
+                        this.$message.success(res.msg);
+                        this.initLayout();
+                        this.initComputerData();
+                    }
+                }).catch(err => {
+                    this.$message.error('请求出错了：' + err);
+                });
+            }).catch(() => {
+                this.$message({ type: 'info', message: '已取消操作' });
+            });
         },
 
         /**

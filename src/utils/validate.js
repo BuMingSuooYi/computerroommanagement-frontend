@@ -50,3 +50,29 @@ export const checkValidPhone = (rule, value, callback) => {
         callback();
     }
 };
+/**
+ * 校验排列模式
+ * @param rule
+ * @param value
+ * @param callback
+ */
+export const checkValidPattern = (rule, value, callback) => {
+    if (!value) {
+        callback(new Error('请输入排列模式'));
+    } else {
+        const regex = /^(?!0\d)\d{1,2}\*\d{1,2}$/;
+        if (!regex.test(value)) {
+            callback(new Error('请输入大于0且小于等于20的数字*数字形式'));
+        } else {
+            const [num1, num2] = value.split('*').map(Number);
+            if (num1 > 20 || num2 > 20) {
+                callback(new Error('请输入大于0且小于等于20的数字*数字形式'));
+            } else {
+                callback();
+            }
+        }
+    }
+};
+
+
+

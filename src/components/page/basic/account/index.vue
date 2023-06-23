@@ -8,7 +8,7 @@
                 <el-form-item label='人员类型'>
                     <el-select v-model='accountForm.type' placeholder='请选择人员类型' clearable>
                         <el-option value='0' label='系统管理员'></el-option>
-                        <el-option value='1' label='教师'></el-option>
+                        <el-option value='1' label='机房管理员'></el-option>
                         <el-option value='2' label='学生'></el-option>
                     </el-select>
                 </el-form-item>
@@ -46,7 +46,7 @@
                 <el-table-column prop='type' label='人员类型' width='170'>
                     <template slot-scope='scope'>
                         <span v-if='scope.row.type === 0'>系统管理员</span>
-                        <span v-else-if='scope.row.type === 1'>教室</span>
+                        <span v-else-if='scope.row.type === 1'>机房管理员</span>
                         <span v-else-if='scope.row.type === 2'>学生</span>
                     </template>
                 </el-table-column>
@@ -80,9 +80,10 @@
                            :total='totalDataSize'>
             </el-pagination>
         </div>
-        <UploadForm />
+        <UploadForm :upload-url='uploadUrl' />
         <AccountForm v-if='showDialog'
                      ref='accountForm'
+
                      :action-type='actionType'
                      @closeDialog='closeDialog' />
     </div>
@@ -111,6 +112,7 @@ export default {
     },
     data() {
         return {
+            uploadUrl: '/account/uploadExcel',
             tableLoading: false,  // 加载动画
             // 角色表单信息(查询条件）
             accountForm: {
@@ -129,7 +131,7 @@ export default {
             totalDataSize: 0, // 数据总条数
             // 选中的账户
             selectedAccount: {},
-            uploadFile: {}
+            // uploadFile: {}
 
         };
     },

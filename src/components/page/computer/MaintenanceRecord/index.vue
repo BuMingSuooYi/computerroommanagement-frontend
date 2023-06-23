@@ -10,7 +10,9 @@
                 <el-form-item label='日期'>
                     <el-date-picker
                         v-model='maintenanceRecordForm.time'
-                        type='date'
+                        clearable
+                        type='datetime'
+                        value-format='yyyy-MM-dd HH:mm:ss'
                         placeholder='请选择维修起始日期'>
                     </el-date-picker>
                 </el-form-item>

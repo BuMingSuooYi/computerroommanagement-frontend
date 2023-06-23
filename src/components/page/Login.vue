@@ -39,8 +39,8 @@ export default {
     data: function() {
         return {
             param: {
-                username: 'admin',
-                password: '123123',
+                username: '',
+                password: '',
                 type: ''
             },
             rules: {
@@ -58,7 +58,6 @@ export default {
                     this.$router.push('/');
                 } else {
                     this.$message.error('请输入账号和密码');
-                    console.log('error submit!!');
                     return false;
                 }
             });

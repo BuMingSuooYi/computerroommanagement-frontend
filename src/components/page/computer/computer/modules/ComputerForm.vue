@@ -127,6 +127,18 @@ export default {
          */
         changeShowData() {
             if (this.actionType === '编辑') {
+                if(this.computerForm.computerConfigurationObject==null){
+                    this.computerForm.computerConfigurationObject={
+                        id: '',
+                        name: '',
+                    };
+                }
+                if(this.computerForm.machineRoomObject==null){
+                    this.computerForm.machineRoomObject={
+                        id: '',
+                        name: '',
+                    };
+                }
                 this.computerForm.state = this.computerForm.state.toString();
             }
         },
@@ -148,6 +160,8 @@ export default {
          */
         submitForm(formName) {
             let params = { ...this.computerForm };
+            console.log(params);
+            console.log(this.actionType);
             // 校验数据合法性
             this.$refs[formName].validate((valid) => {
                 if (valid) {

@@ -33,6 +33,7 @@
 
 <script>
 import { addMachineRoom, editMachineRoom } from '@/api/basic/machineRoom';
+import { checkValidPattern } from '@/utils/validate';
 
 export default {
     name: 'MachineRoomForm',
@@ -61,7 +62,7 @@ export default {
                     { required: true, message: '请输入机房名称', trigger: 'blur' }
                 ],
                 pattern: [
-                    { required: true, message: '请输入排列模式', trigger: 'blur' }
+                    { required: true, trigger: 'blur', validator: checkValidPattern }
                 ],
                 principal: [
                     { required: true, message: '请输入负责人', trigger: 'blur' }
@@ -73,7 +74,7 @@ export default {
         };
     },
     created() {
-        this.changeShowData()
+        this.changeShowData();
     },
     methods: {
         /**
@@ -83,7 +84,7 @@ export default {
          */
         changeShowData() {
             if (this.actionType === '编辑') {
-                this.machineRoomForm.state = this.machineRoomForm.state.toString()
+                this.machineRoomForm.state = this.machineRoomForm.state.toString();
             }
         },
         /**

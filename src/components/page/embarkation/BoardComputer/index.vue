@@ -86,7 +86,7 @@ export default {
             totalDataSize: 0, // 数据总条数
             // 选中的机房
             selectedMachineRoom: {},
-            uploadFile: {}
+            // uploadFile: {}
         };
     },
 

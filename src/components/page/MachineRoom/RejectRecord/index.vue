@@ -5,7 +5,7 @@
 
                 <el-form-item label='机房'>
                     <el-select v-model='rejectRecordForm.machineRoom' placeholder='请选择机房'
-                               @visible-change='queryAllMachineRoom'>
+                               @visible-change='queryAllMachineRoom' clearable>
                         <el-option v-for='(item, index) in machineRoomOptions' :label='item.name'
                                    :value='item.id'
                                    :key='index'></el-option>
@@ -27,6 +27,9 @@
             </el-form>
         </div>
         <div class='handle-group'>
+            <el-button type='success' @click='showUploadFileDialog'>上传<i class='el-icon-upload el-icon--right'></i>
+            </el-button>
+            <el-button type='success'>下载<i class='el-icon-download el-icon--right'></i></el-button>
             <el-button type='primary' @click="handleEditOrAdd(null, '新增')" plain>+ 新增</el-button>
             <el-button type='danger' @click="handleDelete('批量', null)">批量删除</el-button>
         </div>
@@ -72,7 +75,7 @@
                            layout='total, sizes, prev, pager, next, jumper' :total='totalDataSize'>
             </el-pagination>
         </div>
-
+        <UploadForm :upload-url='uploadUrl' />
         <RejectRecordForm v-if='showDialog' ref='rejectRecordForm' :action-type='actionType'
                           :selected-reject-record='selectedRejectRecord'
                           @closeDialog='closeDialog' />
@@ -85,17 +88,22 @@ import { deleteRejectRecordById, getRejectRecordByPage } from '@/api/basic/rejec
 import { getAllMachineRoom } from '@/api/basic/machineRoom';
 import RejectRecordForm from '@/components/page/MachineRoom/RejectRecord/modules/RejectRecordForm.vue';
 import { formatDate } from '@/utils/formate';
+import UploadForm from '@/components/page/common/UploadForm.vue';
+import { mapMutations, mapState } from 'vuex';
 
 export default {
     name: 'RejectRecord',
     components: {
+        UploadForm,
         RejectRecordForm
     },
     created() {
-        this.initRejectRecord();
+        this.initRejectRecordData();
+        this.$watch('uploadSuccess', this.refreshData);
     },
     data() {
         return {
+            uploadUrl: '/rejectRecord/uploadExcel',
             tableLoading: false,  // 加载动画
             showDialog: false,  // 对话框显隐
             actionType: '',  // 操作类型
@@ -115,8 +123,31 @@ export default {
             rejectRecordData: [] // 机房不可用时间所有数据
         };
     },
+    computed: {
+        ...mapState(['uploadSuccess'])
+    },
     methods: {
         formatDate,
+        // 使用了mapMutations辅助函数将toggleUploadDialog mutation映射到组件中的toggleUploadDialog方法。
+        ...mapMutations(['toggleUploadDialog', 'refreshTableData']),
+        /**
+         * 展示上传文件对话框
+         */
+        showUploadFileDialog() {
+            this.toggleUploadDialog(true);
+        },
+        /**
+         * 刷新数据监听
+         * @param newVal
+         * @param oldVal
+         */
+        refreshData(newVal, oldVal) {
+            // 在shouldRefreshData状态变化时执行的操作
+            if (newVal) {
+                this.initRejectRecordData();
+                this.refreshTableData(false);
+            }
+        },
         /**
          * 查询所有机房
          */
@@ -133,7 +164,7 @@ export default {
          * 获取所有机房不可用时间数据
          * @returns {Promise<void>}
          */
-        initRejectRecord: async function() {
+        initRejectRecordData: async function() {
             this.tableLoading = true;
             // 定义请求参数 (查询条件),看文档
             const params = {
@@ -142,6 +173,7 @@ export default {
                 machineRoom: this.rejectRecordForm.machineRoom ? this.rejectRecordForm.machineRoom : -1,
                 time: this.rejectRecordForm.time ? this.rejectRecordForm.time : ''
             };
+            console.log(params);
             await getRejectRecordByPage(params).then(res => {
                 if (res.code === 200) {
                     // 设置数据总条数
@@ -149,7 +181,7 @@ export default {
                     this.tableLoading = false;
                     // 存储请求到的数据
                     this.rejectRecordData = res.data.records;
-                    console.log(res.data)
+                    console.log(res.data);
                 }
             }).catch(err => {
                 this.$message.error('请求出错了：' + err);
@@ -162,7 +194,7 @@ export default {
          */
         handleSizeChange(val) {
             this.pageSize = val;
-            this.initRejectRecord();
+            this.initRejectRecordData();
         },
         /**
          * 切换第几页
@@ -170,7 +202,7 @@ export default {
          */
         handleCurrentChange(val) {
             this.page = val;
-            this.initRejectRecord();
+            this.initRejectRecordData();
         },
         /**
          * 获取所有选中的数据
@@ -228,7 +260,7 @@ export default {
          */
         querySubmit() {
             this.page = 1;  // 设置查询第page页或者第一页
-            this.initRejectRecord();
+            this.initRejectRecordData();
         },
         /**
          * 编辑或者添加机房不可用时间
@@ -261,7 +293,7 @@ export default {
         closeDialog(changeInfo) {
             // 数据改变，重新刷新表格数据
             if (changeInfo) {
-                this.initRejectRecord();
+                this.initRejectRecordData();
             }
             // 关闭对话框
             this.showDialog = false;

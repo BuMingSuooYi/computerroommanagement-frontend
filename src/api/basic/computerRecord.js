@@ -71,3 +71,16 @@ export const editComputerRecord = (params) => {
         data: { ...params }
     });
 };
+/**
+ * 根据电脑id下机
+ * @returns {AxiosPromise}
+ * @returns {*}
+ * @param computer
+ */
+export const logoutComputerRecord = (computer) => {
+    return request({
+        url: `${baseURL}/logout`,
+        method: 'PUT',
+        params: { computer }
+    });
+}

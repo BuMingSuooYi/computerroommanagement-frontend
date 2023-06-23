@@ -73,7 +73,7 @@ export default {
                     { required: true, message: '请选择性别', trigger: 'blur' }
                 ],
                 telephone: [
-                    { required: true, message: '请输入正确的电话号码', trigger: 'blur', validator: checkValidPhone }
+                    { required: true,  trigger: 'blur', validator: checkValidPhone }
                 ]
             }
         };

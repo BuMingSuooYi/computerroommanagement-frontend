@@ -19,6 +19,9 @@
             </el-form>
         </div>
         <div class='handle-group'>
+            <el-button type='success' @click='showUploadFileDialog'>上传<i class='el-icon-upload el-icon--right'></i>
+            </el-button>
+            <el-button type='success'>下载<i class='el-icon-download el-icon--right'></i></el-button>
             <el-button type='primary' @click="handleEditOrAdd(null, '新增')" plain>+ 新增</el-button>
             <el-button type='danger' @click="handleDelete('批量', null)">批量删除</el-button>
         </div>
@@ -66,7 +69,7 @@
                            layout='total, sizes, prev, pager, next, jumper' :total='totalDataSize'>
             </el-pagination>
         </div>
-
+        <UploadForm :upload-url='uploadUrl' />
         <StudentForm v-if='showDialog' ref='studentForm' :action-type='actionType' :selected-student='selectedStudent'
                      @closeDialog='closeDialog' />
 
@@ -76,17 +79,22 @@
 <script>
 import { deleteStudentById, getStudentByPage } from '@/api/basic/student';
 import StudentForm from '@/components/page/student/modules/StudentForm.vue';
+import UploadForm from '@/components/page/common/UploadForm.vue';
+import { mapMutations, mapState } from 'vuex';
 
 export default {
     name: 'Student',
     components: {
+        UploadForm,
         StudentForm
     },
     created() {
         this.initStudentData();
+        this.$watch('uploadSuccess', this.refreshData);
     },
     data() {
         return {
+            uploadUrl: '/student/uploadExcel',
             tableLoading: false,  // 加载动画
             showDialog: false,  // 对话框显隐
             actionType: '',  // 操作类型
@@ -106,7 +114,30 @@ export default {
             studentData: [] // 学生所有数据
         };
     },
+    computed: {
+        ...mapState(['uploadSuccess'])
+    },
     methods: {
+        // 使用了mapMutations辅助函数将toggleUploadDialog mutation映射到组件中的toggleUploadDialog方法。
+        ...mapMutations(['toggleUploadDialog', 'refreshTableData']),
+        /**
+         * 展示上传文件对话框
+         */
+        showUploadFileDialog() {
+            this.toggleUploadDialog(true);
+        },
+        /**
+         * 刷新数据监听
+         * @param newVal
+         * @param oldVal
+         */
+        refreshData(newVal, oldVal) {
+            // 在shouldRefreshData状态变化时执行的操作
+            if (newVal) {
+                this.initStudentData();
+                this.refreshTableData(false);
+            }
+        },
         /**
          * 初始化所有学生数据
          * @returns {Promise<void>}
