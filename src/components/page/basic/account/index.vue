@@ -83,7 +83,6 @@
         <UploadForm :upload-url='uploadUrl' />
         <AccountForm v-if='showDialog'
                      ref='accountForm'
-
                      :action-type='actionType'
                      @closeDialog='closeDialog' />
     </div>
@@ -95,9 +94,6 @@ import UploadForm from '@/components/page/common/UploadForm.vue';
 import { mapMutations, mapState } from 'vuex';
 import AccountForm from '@/components/page/basic/account/modules/AccountForm.vue';
 
-/**
- * 参考教程 https://www.jianshu.com/p/01720959efdb/
- */
 export default {
     name: 'Account',
     components: {
@@ -130,9 +126,7 @@ export default {
             pageSizes: [6, 10, 15], // 每页大小
             totalDataSize: 0, // 数据总条数
             // 选中的账户
-            selectedAccount: {},
-            // uploadFile: {}
-
+            selectedAccount: {}
         };
     },
     computed: {
