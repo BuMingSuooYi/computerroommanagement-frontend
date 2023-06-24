@@ -34,7 +34,7 @@
         <div class='handle-group'>
             <el-button type='success' @click='showUploadFileDialog'>上传<i class='el-icon-upload el-icon--right'></i>
             </el-button>
-            <el-button type='success'>下载<i class='el-icon-download el-icon--right'></i></el-button>
+            <el-button type='success' @click='exportExcel'>下载<i class='el-icon-download el-icon--right'></i></el-button>
             <el-button type='primary' @click="handleEditOrAdd(null, '新增')" plain>+ 新增</el-button>
         </div>
         <div class='table-content'>
@@ -42,7 +42,7 @@
                       stripe
                       style='width: 100%;background-color: #3A71A8' :header-cell-style="{ background: '#f5f7fa' }"
                       @selection-change='handleSelectionChange'>
-                
+
                 <el-table-column label='序号' type='index' width='100'>
                     <template slot-scope='scope'>
                         <!-- 自定义索引列的内容 -->
@@ -103,11 +103,12 @@
 </template>
 
 <script>
-import { deleteComputerById, getAllComputer, getComputerByPage } from '@/api/basic/computer';
+import { deleteComputerById, exportComputer, getAllComputer, getComputerByPage } from '@/api/basic/computer';
 import ComputerForm from '@/components/page/computer/computer/modules/ComputerForm.vue';
 import { getAllMachineRoom } from '@/api/basic/machineRoom';
 import { mapMutations, mapState } from 'vuex';
 import UploadForm from '@/components/page/common/UploadForm.vue';
+import { exportStudent } from '@/api/basic/student';
 
 export default {
     name: 'Computer',
@@ -146,6 +147,21 @@ export default {
         ...mapState(['uploadSuccess'])
     },
     methods: {
+        exportExcel() {
+            exportComputer().then(res => {
+                const downloadUrl = window.URL.createObjectURL(new Blob([res]));
+                const link = document.createElement('a');
+                link.href = downloadUrl;
+                link.setAttribute('download', 'Computer.xlsx'); // 设置文件名
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                this.$message.success('导出成功');
+
+            }).catch(err => {
+                this.$message.error('请求出错了：' + err);
+            });
+        },
         // 使用了mapMutations辅助函数将toggleUploadDialog mutation映射到组件中的toggleUploadDialog方法。
         ...mapMutations(['toggleUploadDialog', 'refreshTableData']),
         /**

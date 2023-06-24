@@ -68,3 +68,15 @@ export const editComputer = (params) => {
         data: { ...params }
     });
 };
+
+/**
+ * 导出电脑
+ * @returns {*}
+ */
+export const exportComputer = () => {
+    return request({
+        url: `${baseURL}/download`,
+        method: 'GET',
+        responseType: 'blob'
+    });
+};

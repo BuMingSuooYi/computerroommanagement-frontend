@@ -9,7 +9,7 @@ export default new Vuex.Store({
         showUploadDialog: false,
         // 文件上传成功
         uploadSuccess: false,
-        machineRoomData: {}
+        machineRoomData: {},
     },
     mutations: {
         /**
@@ -33,7 +33,7 @@ export default new Vuex.Store({
         },
         Clear_MachineRoom(state) {
             state.machineRoomData = {};
-        }
+        },
     }
 });
 

@@ -47,7 +47,7 @@
                         <a href='https://blog.jayhrn.com/' target='_blank'>
                             <el-dropdown-item>联系作者</el-dropdown-item>
                         </a>
-                        <el-dropdown-item divided command='loginout'>退出登录</el-dropdown-item>
+                        <el-dropdown-item divided command='logout'>退出登录</el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
             </div>
@@ -63,7 +63,7 @@ export default {
         return {
             collapse: false,
             fullscreen: false,
-            name: 'linxin',
+            name: 'JayHrn',
             message: 2
         };
     },
@@ -72,16 +72,16 @@ export default {
     },
     computed: {
         username() {
-            let username = localStorage.getItem('ms_username');
+            let username = JSON.parse(localStorage.getItem('account')).username;
             return username ? username : this.name;
         }
     },
     methods: {
         // 用户名下拉菜单选择事件
         handleCommand(command) {
-            if (command == 'loginout') {
-                localStorage.removeItem('ms_username');
+            if (command === 'logout') {
                 this.$router.push('/login');
+                localStorage.removeItem('account');
             }
         },
         // 侧边栏折叠

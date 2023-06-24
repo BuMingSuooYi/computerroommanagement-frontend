@@ -85,7 +85,6 @@ export default {
         }
     },
     mounted() {
-        this.machineRoom = this.$store.state.machineRoomData;
         this.initLayout();
         this.initComputerData();
     },

@@ -26,7 +26,8 @@
         <div class='handle-group'>
             <el-button type='success' @click='showUploadFileDialog'>上传<i class='el-icon-upload el-icon--right'></i>
             </el-button>
-            <el-button type='success'>下载<i class='el-icon-download el-icon--right'></i></el-button>
+            <el-button type='success' @click='exportExcel'>下载<i class='el-icon-download el-icon--right'></i>
+            </el-button>
             <el-button type='primary' @click='handleEditOrAdd(null,"新增")' plain>+ 新增</el-button>
         </div>
         <div class='table-content'>
@@ -89,7 +90,7 @@
 </template>
 
 <script>
-import { getAccountByPage, deleteAccountById, editAccount } from '@/api/basic/account';
+import { getAccountByPage, deleteAccountById, editAccount, exportAccount } from '@/api/basic/account';
 import UploadForm from '@/components/page/common/UploadForm.vue';
 import { mapMutations, mapState } from 'vuex';
 import AccountForm from '@/components/page/basic/account/modules/AccountForm.vue';
@@ -133,6 +134,21 @@ export default {
         ...mapState(['uploadSuccess'])
     },
     methods: {
+        exportExcel() {
+            exportAccount().then(res => {
+                const downloadUrl = window.URL.createObjectURL(new Blob([res]));
+                const link = document.createElement('a');
+                link.href = downloadUrl;
+                link.setAttribute('download', 'Account.xlsx'); // 设置文件名
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                this.$message.success('导出成功');
+
+            }).catch(err => {
+                this.$message.error('请求出错了：' + err);
+            });
+        },
         // 使用了mapMutations辅助函数将toggleUploadDialog mutation映射到组件中的toggleUploadDialog方法。
         ...mapMutations(['toggleUploadDialog', 'refreshTableData']),
         /**

@@ -71,3 +71,15 @@ export const editRejectRecord = (params) => {
         data: { ...params }
     });
 };
+
+/**
+ * 导出不可用时间段
+ * @returns {*}
+ */
+export const exportRejectRecord = () => {
+    return request({
+        url: `${baseURL}/download`,
+        method: 'GET',
+        responseType: 'blob'
+    });
+};

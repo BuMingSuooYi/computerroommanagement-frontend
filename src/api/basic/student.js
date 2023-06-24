@@ -32,6 +32,19 @@ export const getStudentByName=(name)=>{
     })
 }
 
+/**
+ * 根据账户查询学生
+ * @param account
+ * @returns {*}
+ */
+export const getStudentByAccount=(account)=>{
+    return request({
+        url: `${baseURL}/account`,
+        method: 'GET',
+        params: {account}
+    })
+}
+
 
 /**
  * 添加学时
@@ -70,5 +83,17 @@ export const editStudent = (params) => {
         url: `${baseURL}`,
         method: 'PUT',
         data: { ...params }
+    });
+};
+
+/**
+ * 导出学生
+ * @returns {*}
+ */
+export const exportStudent = () => {
+    return request({
+        url: `${baseURL}/download`,
+        method: 'GET',
+        responseType: 'blob'
     });
 };

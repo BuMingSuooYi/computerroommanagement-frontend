@@ -16,17 +16,16 @@
         >
             <template v-for='item in items'>
                 <template v-if='item.subs'>
-                    <el-submenu :index='item.index' :key='item.index'>
+                    <el-submenu v-if='hasPermission(item.role)' :index='item.index' :key='item.index'>
                         <template slot='title'>
                             <i :class='item.icon'></i>
                             <span slot='title'>{{ item.title }}</span>
                         </template>
                         <template v-for='subItem in item.subs'>
                             <el-submenu
-                                v-if='subItem.subs'
+                                v-if='subItem.subs&&hasPermission(subItem.role)'
                                 :index='subItem.index'
-                                :key='subItem.index'
-                            >
+                                :key='subItem.index'>
                                 <template slot='title'>{{ subItem.title }}</template>
                                 <el-menu-item
                                     v-for='(threeItem,i) in subItem.subs'
@@ -36,7 +35,7 @@
                                 </el-menu-item>
                             </el-submenu>
                             <el-menu-item
-                                v-else
+                                v-else-if='hasPermission(subItem.role)'
                                 :index='subItem.index'
                                 :key='subItem.index'
                             >{{ subItem.title }}
@@ -45,7 +44,7 @@
                     </el-submenu>
                 </template>
                 <template v-else>
-                    <el-menu-item :index='item.index' :key='item.index'>
+                    <el-menu-item v-if='hasPermission(item.role)' :index='item.index' :key='item.index'>
                         <i :class='item.icon'></i>
                         <span slot='title'>{{ item.title }}</span>
                     </el-menu-item>
@@ -70,40 +69,48 @@ export default {
                 {
                     icon: 'el-icon-s-home',
                     index: 'dashboard',
-                    title: '系统首页'
+                    title: '系统首页',
+                    role: ['admin', 'roomAdmin', 'student']
                 },
                 {
                     icon: 'el-icon-date',
                     index: '1',
                     title: '基础数据管理',
+                    role: ['admin', 'roomAdmin'],
                     subs: [
                         {
                             index: 'account',
-                            title: '用户管理'
+                            title: '用户管理',
+                            role: ['admin', 'roomAdmin']
                         },
                         {
                             index: 'section',
-                            title: '节次管理'
+                            title: '节次管理',
+                            role: ['admin', 'roomAdmin']
                         }
                     ]
                 },
                 {
                     icon: 'el-icon-date',
                     index: 'student',
-                    title: '学生管理'
+                    title: '学生管理',
+                    role: ['admin', 'roomAdmin']
                 },
                 {
                     icon: 'el-icon-date',
                     index: '2',
                     title: '机房管理',
+                    role: ['admin', 'roomAdmin'],
                     subs: [
                         {
                             index: 'machineRoom',
-                            title: '机房管理'
+                            title: '机房管理',
+                            role: ['admin', 'roomAdmin']
                         },
                         {
                             index: 'rejectRecord',
-                            title: '开放管理'
+                            title: '开放管理',
+                            role: ['admin', 'roomAdmin']
                         }
                     ]
                 },
@@ -114,15 +121,18 @@ export default {
                     subs: [
                         {
                             index: 'computer',
-                            title: '电脑管理'
+                            title: '电脑管理',
+                            role: ['admin', 'roomAdmin']
                         },
                         {
                             index: 'maintenanceRecord',
-                            title: '维修管理'
+                            title: '维修管理',
+                            role: ['admin', 'roomAdmin']
                         },
                         {
                             index: 'computerConfiguration',
-                            title: '配置管理'
+                            title: '配置管理',
+                            role: ['admin', 'roomAdmin']
                         }
                     ]
                 },
@@ -130,18 +140,23 @@ export default {
                     icon: 'el-icon-date',
                     index: '4',
                     title: '上机管理',
+                    role: ['roomAdmin'],
                     subs: [
                         {
                             index: 'boardComputer',
-                            title: '上机管理'
+                            title: '上机管理',
+                            role: ['roomAdmin']
                         },
                         {
                             index: 'computerRecord',
-                            title: '上机记录'
+                            title: '上机记录',
+                            role: ['roomAdmin']
                         },
                         {
                             index: 'clazzPeriod',
-                            title: '学时管理'
+                            title: '学时管理',
+                            role: ['roomAdmin']
+
                         }
                     ]
                 },
@@ -149,10 +164,12 @@ export default {
                     icon: 'el-icon-date',
                     index: '5',
                     title: '系统管理',
+                    role: ['admin'],
                     subs: [
                         {
                             index: 'loginLog',
-                            title: '登录日志'
+                            title: '登录日志',
+                            role: ['admin']
                         }
                     ]
                 },
@@ -163,24 +180,34 @@ export default {
                     subs: [
                         {
                             index: 'permission',
-                            title: '权限测试'
+                            title: '权限测试',
+                            role: ['admin', 'roomAdmin', 'student']
                         },
                         {
                             index: '404',
-                            title: '404页面'
+                            title: '404页面',
+                            role: ['admin', 'roomAdmin', 'student']
                         },
                         {
                             index: '403',
-                            title: '403页面'
+                            title: '403页面',
+                            role: ['admin', 'roomAdmin', 'student']
                         }
                     ]
+                },
+                {
+                    icon: 'el-icon-coffee-cup',
+                    index: '/myComputerRecord',
+                    title: '上机记录',
+                    role: ['student']
                 }
                 // {
                 //     icon: 'el-icon-coffee-cup',
                 //     index: '/donate',
                 //     title: '支持作者'
                 // }
-            ]
+            ],
+            currentRole: ''
         };
     },
     computed: {
@@ -194,6 +221,24 @@ export default {
             this.collapse = msg;
             bus.$emit('collapse-content', msg);
         });
+        const type = JSON.parse(localStorage.getItem('account')).type;
+        let role = '';
+        if (type === 0) {
+            role = 'admin';
+        } else if (type === 1) {
+            role = 'roomAdmin';
+        } else if (type === 2) {
+            role = 'student';
+        }
+        this.currentRole = role;
+    },
+    methods: {
+        hasPermission(roles) {
+            if (roles === undefined) {
+                return false;
+            }
+            return roles.includes(this.currentRole);
+        }
     }
 };
 </script>
