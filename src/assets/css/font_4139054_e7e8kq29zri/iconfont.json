@@ -1,0 +1,30 @@
+{
+  "id": "4139054",
+  "name": "crm",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "6527108",
+      "name": "电脑",
+      "font_class": "diannao",
+      "unicode": "e642",
+      "unicode_decimal": 58946
+    },
+    {
+      "icon_id": "16322948",
+      "name": "冠军",
+      "font_class": "guanjun",
+      "unicode": "e705",
+      "unicode_decimal": 59141
+    },
+    {
+      "icon_id": "34607919",
+      "name": "目标",
+      "font_class": "mubiao",
+      "unicode": "e639",
+      "unicode_decimal": 58937
+    }
+  ]
+}

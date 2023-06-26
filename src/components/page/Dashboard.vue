@@ -2,140 +2,118 @@
     <div>
         <el-row :gutter='20'>
             <el-col :span='8'>
-                <el-card shadow='hover' class='mgb20' style='height:252px;'>
-<!--                    <div class='user-info'>-->
-<!--                        <img src='../../assets/img/img.jpg' class='user-avator' alt />-->
-<!--                        <div class='user-info-cont'>-->
-<!--                            <div class='user-info-name'>{{ name }}</div>-->
-<!--                            <div>{{ role }}</div>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                    <div class='user-info-list'>-->
-<!--                        上次登录时间：-->
-<!--                        <span>2023-06-09</span>-->
-<!--                    </div>-->
-<!--                    <div class='user-info-list'>-->
-<!--                        上次登录地点：-->
-<!--                        <span>南昌</span>-->
-<!--                    </div>-->
+                <el-card :class='type+`student`' shadow='hover' class='mgb20'>
+                    <div class='user-info'>
+                        <img src='../../assets/img/img.jpg' class='user-avator' alt />
+                        <div class='user-info-cont'>
+                            <div class='user-info-name'>{{ name }}</div>
+                            <div>{{ role }}</div>
+                        </div>
+                    </div>
+                    <div class='user-info-list'>
+                        上次登录时间：
+                        <span>2023-06-27</span>
+                    </div>
+                    <div class='user-info-list'>
+                        上次登录地点：
+                        <span>南昌</span>
+                    </div>
+                    <div v-if='type===2' class='progress-info'>
+                        <div class='progress-title'>学习进度:</div>
+                        <el-progress style='display: flex;width: 72%;align-items: center' :text-inside='true'
+                                     :stroke-width='18' :percentage='50' status='success'></el-progress>
+                    </div>
                 </el-card>
-                <el-card shadow='hover' style='height:252px;'>
-<!--                    <div slot='header' class='clearfix'>-->
-<!--                        <span>语言详情</span>-->
-<!--                    </div>-->
-<!--                    Vue-->
-<!--                    <el-progress :percentage='71.3' color='#42b983'></el-progress>-->
-<!--                    JavaScript-->
-<!--                    <el-progress :percentage='24.1' color='#f1e05a'></el-progress>-->
-<!--                    CSS-->
-<!--                    <el-progress :percentage='13.7'></el-progress>-->
-<!--                    HTML-->
-<!--                    <el-progress :percentage='5.9' color='#f56c6c'></el-progress>-->
+                <el-card id='chart1' shadow='hover' style='height:260px;'>
                 </el-card>
             </el-col>
             <el-col :span='16'>
-                <el-row :gutter='20' class='mgb20'>
+                <el-row :gutter='20'>
                     <el-col :span='8'>
                         <el-card shadow='hover' :body-style="{padding: '0px'}">
-<!--                            <div class='grid-content grid-con-1'>-->
-<!--                                <i class='el-icon-lx-people grid-con-icon'></i>-->
-<!--                                <div class='grid-cont-right'>-->
-<!--                                    <div class='grid-num'>6666</div>-->
-<!--                                    <div>用户访问量</div>-->
-<!--                                </div>-->
-<!--                            </div>-->
+                            <div class='grid-content grid-con-1'>
+                                <i class='el-icon-lx-people grid-con-icon'>
+                                    <i class='iconfont icon-diannao'></i>
+                                </i>
+                                <div class='grid-cont-right'>
+                                    <div class='grid-num'>30</div>
+                                    <div>已上机学时</div>
+                                </div>
+                            </div>
                         </el-card>
                     </el-col>
                     <el-col :span='8'>
                         <el-card shadow='hover' :body-style="{padding: '0px'}">
-<!--                            <div class='grid-content grid-con-2'>-->
-<!--                                <i class='el-icon-lx-notice grid-con-icon'></i>-->
-<!--                                <div class='grid-cont-right'>-->
-<!--                                    <div class='grid-num'>666</div>-->
-<!--                                    <div>系统消息</div>-->
-<!--                                </div>-->
-<!--                            </div>-->
+                            <div class='grid-content grid-con-2'>
+                                <i class='el-icon-lx-notice grid-con-icon'>
+                                    <i class='iconfont icon-mubiao'></i>
+                                </i>
+                                <div class='grid-cont-right'>
+                                    <div class='grid-num'>60</div>
+                                    <div>目标学时</div>
+                                </div>
+                            </div>
                         </el-card>
                     </el-col>
                     <el-col :span='8'>
                         <el-card shadow='hover' :body-style="{padding: '0px'}">
-<!--                            <div class='grid-content grid-con-3'>-->
-<!--                                <i class='el-icon-lx-goods grid-con-icon'></i>-->
-<!--                                <div class='grid-cont-right'>-->
-<!--                                    <div class='grid-num'>6666</div>-->
-<!--                                    <div>数量</div>-->
-<!--                                </div>-->
-<!--                            </div>-->
+                            <div class='grid-content grid-con-3'>
+                                <i class='el-icon-lx-goods grid-con-icon'>
+                                    <i class='iconfont icon-guanjun'></i>
+                                </i>
+                                <div class='grid-cont-right'>
+                                    <div class='grid-num'>2</div>
+                                    <div>排名</div>
+                                </div>
+                            </div>
                         </el-card>
                     </el-col>
                 </el-row>
-                <el-card shadow='hover' style='height:403px;'>
-<!--                    <div slot='header' class='clearfix'>-->
-<!--                        <span>待办事项</span>-->
-<!--                        <el-button style='float: right; padding: 3px 0' type='text'>添加</el-button>-->
-<!--                    </div>-->
-<!--                    <el-table :show-header='false' :data='todoList' style='width:100%;'>-->
-<!--                        <el-table-column width='40'>-->
-<!--                            <template slot-scope='scope'>-->
-<!--                                <el-checkbox v-model='scope.row.status'></el-checkbox>-->
-<!--                            </template>-->
-<!--                        </el-table-column>-->
-<!--                        <el-table-column>-->
-<!--                            <template slot-scope='scope'>-->
-<!--                                <div-->
-<!--                                    class='todo-item'-->
-<!--                                    :class="{'todo-item-del': scope.row.status}"-->
-<!--                                >{{ scope.row.title }}-->
-<!--                                </div>-->
-<!--                            </template>-->
-<!--                        </el-table-column>-->
-<!--                        <el-table-column width='60'>-->
-<!--                            <template>-->
-<!--                                <i class='el-icon-edit'></i>-->
-<!--                                <i class='el-icon-delete'></i>-->
-<!--                            </template>-->
-<!--                        </el-table-column>-->
-<!--                    </el-table>-->
+                <el-card shadow='hover' style='height:200px;'>
+                    <div class='wrap-title'>
+                        <div>学生</div>
+                        <div>电脑</div>
+                        <div>机位</div>
+                        <div>起始时间</div>
+                    </div>
+                    <div class='wrap-contain'>
+                        <vue-seamless-scroll :class-option='classOption' :data='listData' class='warp'>
+                            <div class='item'>
+                                <div class='item-line' v-for='(item, index) in listData' :key='index'>
+                                    <div class='item-info'>{{ item.studentObject.name }}</div>
+                                    <div class='item-info'>{{ item.computerObject.number }}</div>
+                                    <div class='item-info'>{{ item.computerObject.cameraStand }}</div>
+                                    <div class='item-info'>{{ item.startTime }}</div>
+                                </div>
+                            </div>
+                        </vue-seamless-scroll>
+                    </div>
+
                 </el-card>
+                <div class='statics-row'>
+                    <el-col :span='12'>
+                        <el-card id='chart2' shadow='hover' style='height: 240px;padding-top: 20px'></el-card>
+                    </el-col>
+                    <el-col :span='12'>
+                        <el-card id='chart3' shadow='hover' style='height: 240px;padding-top: 20px'></el-card>
+                    </el-col>
+                </div>
             </el-col>
         </el-row>
-
     </div>
 </template>
 
 <script>
+import * as echarts from 'echarts';
+import { getComputerRecordByPage } from '@/api/basic/computerRecord';
 
 export default {
     name: 'dashboard',
     data() {
         return {
-            name: localStorage.getItem('ms_username'),
-            todoList: [
-                {
-                    title: '远赴人间惊鸿宴，一睹人间盛世言',
-                    status: false
-                },
-                {
-                    title: '左手牵你，右手拿笔，不负青春不负你',
-                    status: false
-                },
-                {
-                    title: '今天要写100行代码加几个bug吧',
-                    status: false
-                },
-                {
-                    title: '今天要修复100个bug',
-                    status: false
-                },
-                {
-                    title: '今天要修复100个bug',
-                    status: true
-                },
-                {
-                    title: '今天要写100行代码加几个bug吧',
-                    status: true
-                }
-            ],
+            name: JSON.parse(localStorage.getItem('account')).username,
+            type: JSON.parse(localStorage.getItem('account')).type,
+            listData: [],
             data: [
                 {
                     name: '2018/09/04',
@@ -165,16 +143,176 @@ export default {
                     name: '2018/09/10',
                     value: 1065
                 }
-            ]
+            ],
+            classOption: {
+                step: 1
+            }
         };
     },
     components: {},
     computed: {
         role() {
-            return this.name === 'admin' ? '超级管理员' : '普通用户';
+            if (this.type === 0) {
+                return '系统管理员';
+            } else if (this.type === 1) {
+                return '机房管理员';
+            } else if (this.type === 2) {
+                return '学生';
+            }
+            return '';
         }
     },
-    methods: {}
+    mounted() {
+        this.drawChart1();
+        this.drawChart2();
+        this.drawChart3();
+    },
+    created() {
+        this.getComputerRecord();
+    },
+    methods: {
+        getComputerRecord: async function() {
+            // 定义请求参数 (查询条件),看文档
+            const params = {
+                page: 1,
+                pageSize: 10,
+                student: '',
+                machineRoom: -1,
+                computer: ''
+            };
+            await getComputerRecordByPage(params).then(res => {
+                if (res.code === 200) {
+                    // 存储请求到的数据
+                    this.listData = res.data.records;
+                    console.log(this.listData);
+                }
+            }).catch(err => {
+                this.$message.error('请求出错了：' + err);
+            });
+        },
+        drawChart1() {
+            // 基于准备好的dom，初始化echarts实例  这个和上面的main对应
+            let myChart = echarts.init(document.getElementById('chart1'));
+            // 指定图表的配置项和数据
+            let option = {
+                title: {
+                    text: '各机房自由上机总学时',
+                    // subtext:'',
+                    x: 'center',
+                    y: '6px',
+                    textStyle: {
+                        color: '#3A7BD5',
+                        fontSize: 16
+                    },
+                    textAlign: 'left'
+                },
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {
+                        type: 'shadow'
+                    }
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                xAxis: [
+                    {
+                        type: 'category',
+                        data: ['D301', 'D202', 'D303', 'D304', 'D305', 'D306', 'D307'],
+                        axisTick: {
+                            alignWithLabel: true
+                        }
+                    }
+                ],
+                yAxis: [
+                    {
+                        type: 'value'
+                    }
+                ],
+                series: [
+                    {
+                        name: 'Direct',
+                        type: 'bar',
+                        barWidth: '60%',
+                        data: [10, 52, 200, 334, 390, 330, 220]
+                    }
+                ]
+            };
+            // 使用刚指定的配置项和数据显示图表。
+            myChart.setOption(option);
+        },
+        drawChart2() {
+            // 基于准备好的dom，初始化echarts实例  这个和上面的main对应
+            let myChart = echarts.init(document.getElementById('chart2'));
+            // 指定图表的配置项和数据
+            let option = {
+                title: {
+                    text: '各班级上机学时',
+                    left: 'center'
+                },
+                tooltip: {
+                    trigger: 'item'
+                },
+                legend: {
+                    orient: 'vertical',
+                    left: 'left'
+                },
+                series: [
+                    {
+                        name: 'Access From',
+                        type: 'pie',
+                        radius: '50%',
+                        data: [
+                            { value: 200, name: '202061' },
+                            { value: 700, name: '202001' },
+                            { value: 580, name: '202002' },
+                            { value: 484, name: '202003' },
+                            { value: 300, name: '202004' }
+                        ],
+                        emphasis: {
+                            itemStyle: {
+                                shadowBlur: 10,
+                                shadowOffsetX: 0,
+                                shadowColor: 'rgba(0, 0, 0, 0.5)'
+                            }
+                        }
+                    }
+                ]
+            };
+            // 使用刚指定的配置项和数据显示图表。
+            myChart.setOption(option);
+        },
+        drawChart3() {
+            // 基于准备好的dom，初始化echarts实例  这个和上面的main对应
+            let myChart = echarts.init(document.getElementById('chart3'));
+            // 指定图表的配置项和数据
+            let option = {
+                title: {
+                    text: '机器维修次数',
+                    left: 'center'
+                },
+                xAxis: {
+                    type: 'category',
+                    data: ['Air17-1', 'Air17-2', 'Air17-3', 'Air17-4', 'Air17-5']
+                },
+                yAxis: {
+                    type: 'value'
+                },
+                series: [
+                    {
+                        data: [150, 230, 224, 218, 135],
+                        type: 'line'
+                    }
+                ]
+            };
+            // 使用刚指定的配置项和数据显示图表。
+            myChart.setOption(option);
+        }
+
+    }
 };
 </script>
 
@@ -187,7 +325,7 @@ export default {
 .grid-content {
     display: flex;
     align-items: center;
-    height: 100px;
+    height: 60px;
 }
 
 .grid-cont-right {
@@ -209,6 +347,14 @@ export default {
     text-align: center;
     line-height: 100px;
     color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.grid-con-icon i {
+    font-size: 30px;
+    color: white !important;
 }
 
 .grid-con-1 .grid-con-icon {
@@ -272,20 +418,56 @@ export default {
 }
 
 .mgb20 {
+    height: 260px;
     margin-bottom: 20px;
 }
 
-.todo-item {
-    font-size: 14px;
+.el-card.mgb20.\32 student {
+    height: 280px !important;
 }
 
-.todo-item-del {
-    text-decoration: line-through;
+
+.progress-title {
+    margin-right: 10px;
     color: #999;
 }
 
-.schart {
+.progress-info {
+    display: flex;
+    line-height: 25px;
+    align-items: center;
+}
+
+.statics-row {
+    margin-top: 20px;
     width: 100%;
-    height: 300px;
+    height: 260px;
+    border-radius: 6px;
+}
+
+.wrap-title {
+    font-size: 16px;
+    font-weight: 700;
+    display: flex;
+    justify-content: space-around;
+}
+
+.warp {
+    height: 100%;
+    overflow: hidden;
+    margin-top: 5px;
+}
+
+.item {
+    display: flex;
+    justify-content: space-around;
+    flex-direction: column;
+}
+
+.item-line {
+    display: flex;
+    justify-content: space-around;
+    height: 30px;
+    line-height: 30px;
 }
 </style>
