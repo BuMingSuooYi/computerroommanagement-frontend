@@ -1,0 +1,107 @@
+{
+  "id": "4139054",
+  "name": "crm",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "557735",
+      "name": "上机预约",
+      "font_class": "shangjiyuyue",
+      "unicode": "e604",
+      "unicode_decimal": 58884
+    },
+    {
+      "icon_id": "1130616",
+      "name": "数据",
+      "font_class": "shuju",
+      "unicode": "e61c",
+      "unicode_decimal": 58908
+    },
+    {
+      "icon_id": "1314418",
+      "name": "首页",
+      "font_class": "shouye",
+      "unicode": "e606",
+      "unicode_decimal": 58886
+    },
+    {
+      "icon_id": "1928387",
+      "name": "在线人数",
+      "font_class": "zaixianrenshu",
+      "unicode": "e677",
+      "unicode_decimal": 58999
+    },
+    {
+      "icon_id": "5140599",
+      "name": "维修",
+      "font_class": "weixiu",
+      "unicode": "e635",
+      "unicode_decimal": 58933
+    },
+    {
+      "icon_id": "5542475",
+      "name": "空闲",
+      "font_class": "kongxian",
+      "unicode": "e609",
+      "unicode_decimal": 58889
+    },
+    {
+      "icon_id": "6487822",
+      "name": "电脑",
+      "font_class": "diannao1",
+      "unicode": "e67b",
+      "unicode_decimal": 59003
+    },
+    {
+      "icon_id": "7765184",
+      "name": "学校_学生",
+      "font_class": "xuexiao_xuesheng",
+      "unicode": "e661",
+      "unicode_decimal": 58977
+    },
+    {
+      "icon_id": "9111918",
+      "name": "系统",
+      "font_class": "xitong",
+      "unicode": "e62d",
+      "unicode_decimal": 58925
+    },
+    {
+      "icon_id": "33971705",
+      "name": "机房类申请",
+      "font_class": "jifangleishenqing",
+      "unicode": "e626",
+      "unicode_decimal": 58918
+    },
+    {
+      "icon_id": "34612922",
+      "name": "设置",
+      "font_class": "shezhi",
+      "unicode": "e63f",
+      "unicode_decimal": 58943
+    },
+    {
+      "icon_id": "6527108",
+      "name": "电脑",
+      "font_class": "diannao",
+      "unicode": "e642",
+      "unicode_decimal": 58946
+    },
+    {
+      "icon_id": "16322948",
+      "name": "冠军",
+      "font_class": "guanjun",
+      "unicode": "e705",
+      "unicode_decimal": 59141
+    },
+    {
+      "icon_id": "34607919",
+      "name": "目标",
+      "font_class": "mubiao",
+      "unicode": "e639",
+      "unicode_decimal": 58937
+    }
+  ]
+}

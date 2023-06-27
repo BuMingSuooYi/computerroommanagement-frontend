@@ -118,6 +118,7 @@ export default {
                     icon: 'el-icon-date',
                     index: '3',
                     title: '电脑管理',
+                    role: ['admin', 'roomAdmin'],
                     subs: [
                         {
                             index: 'computer',
@@ -140,23 +141,22 @@ export default {
                     icon: 'el-icon-date',
                     index: '4',
                     title: '上机管理',
-                    role: ['roomAdmin'],
+                    role: ['admin', 'roomAdmin'],
                     subs: [
                         {
                             index: 'boardComputer',
                             title: '上机管理',
-                            role: ['roomAdmin']
+                            role: ['admin', 'roomAdmin']
                         },
                         {
                             index: 'computerRecord',
                             title: '上机记录',
-                            role: ['roomAdmin']
+                            role: ['admin', 'roomAdmin']
                         },
                         {
                             index: 'clazzPeriod',
                             title: '学时管理',
-                            role: ['roomAdmin']
-
+                            role: ['admin']
                         }
                     ]
                 },

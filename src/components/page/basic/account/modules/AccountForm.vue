@@ -17,8 +17,7 @@
             <el-form-item label='人员类型'>
                 <el-select v-model='accountForm.type' placeholder='请选择人员类型' clearable>
                     <el-option value='0' label='系统管理员'></el-option>
-                    <el-option value='1' label='教师'></el-option>
-<!--                    <el-option value='2' label='学生'></el-option>-->
+                    <el-option value='1' label='机房管理员'></el-option>
                 </el-select>
             </el-form-item>
 
