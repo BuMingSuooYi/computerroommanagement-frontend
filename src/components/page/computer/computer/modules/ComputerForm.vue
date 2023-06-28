@@ -79,9 +79,6 @@ export default {
                 number: [
                     { required: true, message: '请输入电脑编号', trigger: 'blur' }
                 ],
-                cameraStand: [
-                    { required: true, message: '请填写机位', trigger: 'blur' }
-                ],
                 state: [
                     { required: true, message: '请选择机器状态', trigger: 'blur' }
                 ]

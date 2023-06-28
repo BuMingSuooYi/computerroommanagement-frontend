@@ -137,13 +137,13 @@ export default {
             type: JSON.parse(localStorage.getItem('account')).type,
             listData: [],
             // 学生基础数据
-            completePeriod: '',
-            targetPeriod: '',
-            ranking: '',
+            completePeriod: 0,
+            targetPeriod: 0,
+            ranking: 0,
             // 管理员等
-            boardingComputer: '',
-            freeComputer: '',
-            repairingComputer: '',
+            boardingComputer: 0,
+            freeComputer: 0,
+            repairingComputer: 0,
             data: [
                 {
                     name: '2018/09/04',
@@ -215,7 +215,7 @@ export default {
                 getPeriod(account).then(res => {
                     this.completePeriod = res.data[0].toFixed(1);
                     this.targetPeriod = res.data[1].toFixed(1);
-                    this.percent = parseFloat((this.completePeriod / this.targetPeriod * 100).toFixed(1));
+                    this.percent = parseFloat((this.completePeriod / this.targetPeriod * 100).toFixed(1)) || 0;
                 });
                 getStudentRanking(account).then(res => {
                     this.ranking = res.data;
