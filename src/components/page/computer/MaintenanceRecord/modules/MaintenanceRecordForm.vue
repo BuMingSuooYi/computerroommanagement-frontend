@@ -30,7 +30,6 @@
             </el-form-item>
 
 
-
             <el-form-item label='备注' prop='remark'>
                 <el-input v-model='maintenanceRecordForm.remark' placeholder='请输入备注'></el-input>
             </el-form-item>
@@ -73,16 +72,11 @@ export default {
                 ],
                 startTime: [
                     { required: true, message: '请选择起始日期', trigger: 'blur' }
-                ],
-                endTime: [
-                    { required: true, message: '请选择结束日期', trigger: 'blur' }
                 ]
-
             }
         };
     },
     created() {
-        // console.log(this.selectedMaintenanceRecord)
     },
     methods: {
         /**

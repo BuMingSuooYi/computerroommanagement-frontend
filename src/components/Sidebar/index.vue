@@ -61,19 +61,19 @@ import logoImg from '@/assets/logo.png';
 export default {
     data() {
         return {
-            title: '通用管理系统',
+            title: '机房管理系统',
             logo: logoImg,
             collapse: false,
             // 路由
             items: [
                 {
-                    icon: 'el-icon-s-home',
+                    icon: 'el-icon-pie-chart',
                     index: 'dashboard',
                     title: '系统首页',
                     role: ['admin', 'roomAdmin', 'student']
                 },
                 {
-                    icon: 'el-icon-date',
+                    icon: 'el-icon-data-line',
                     index: '1',
                     title: '基础数据管理',
                     role: ['admin', 'roomAdmin'],
@@ -91,13 +91,13 @@ export default {
                     ]
                 },
                 {
-                    icon: 'el-icon-date',
+                    icon: 'el-icon-user',
                     index: 'student',
                     title: '学生管理',
                     role: ['admin', 'roomAdmin']
                 },
                 {
-                    icon: 'el-icon-date',
+                    icon: 'el-icon-office-building',
                     index: '2',
                     title: '机房管理',
                     role: ['admin', 'roomAdmin'],
@@ -115,7 +115,7 @@ export default {
                     ]
                 },
                 {
-                    icon: 'el-icon-date',
+                    icon: 'el-icon-cpu',
                     index: '3',
                     title: '电脑管理',
                     role: ['admin', 'roomAdmin'],
@@ -138,7 +138,7 @@ export default {
                     ]
                 },
                 {
-                    icon: 'el-icon-date',
+                    icon: 'el-icon-thumb',
                     index: '4',
                     title: '上机管理',
                     role: ['admin', 'roomAdmin'],
@@ -161,7 +161,7 @@ export default {
                     ]
                 },
                 {
-                    icon: 'el-icon-date',
+                    icon: 'el-icon-help',
                     index: '5',
                     title: '系统管理',
                     role: ['admin'],

@@ -214,7 +214,8 @@ export default {
                     // 存储请求到的数据
                     this.computerData = res.data.records;
                     // 设置数据总条数
-                    this.totalDataSize = res.data.records.length;
+                    this.totalDataSize = res.data.total;
+                    console.log(res.data)
                     this.tableLoading = false;
                 }
             }).catch(err => {

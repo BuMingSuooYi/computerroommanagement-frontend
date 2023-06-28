@@ -126,9 +126,7 @@ export default {
                     this.totalDataSize = res.data.total;
                     this.tableLoading = false;
                     // 存储请求到的数据
-
                     this.maintenanceRecordData = res.data.records;
-                    console.log(res.data)
                 }
             }).catch(err => {
                 this.$message.error('请求出错了：' + err);
